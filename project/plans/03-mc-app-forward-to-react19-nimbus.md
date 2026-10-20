@@ -6,14 +6,24 @@
 - mc-app consumes only `/service/mc/*` and `/service/tiktok/*` (route map in 01).
 
 ## 3a. Backend access via `forward-to` + express session verifier
-Replace "read service URL from Custom Object, call it with fetch" with the MC proxy:
-- `custom-application-config.mjs`: add `additionalOAuthScopes` as needed and a
-  `headers.csp` `connect-src` is NOT needed for forward-to (same-origin MC proxy).
-- mc-app calls `https://mc-api.<region>.commercetools.com/proxy/forward-to` via `actions-global`/`executeHttpClientRequest` with `forwardTo: { uri: <service URL>, ... }` — the service URL is known to the MC app only through config. Source options (pick in Q2): (i) Connect `ENTRY_POINT`-style env injected into the mc-app deployment (`mc-app` `standardConfiguration` key `SERVICE_URL`, set at install), or (ii) `customApplication` `env` via `custom-application-config` `env.production.url` + `{{...}}` — verify supported placeholders.
-- Service: add `@commercetools-backend/express` `createSessionAuthVerifier` middleware on all `/service/*` routes **except** `/service/webhook` and `/service/authorize-app`. Config: `audience` = service URL (set via `CONNECT_SERVICE_URL`-style env), `issuer` = `https://mc-api.<region>.commercetools.com`; `inferProjectKey: true`; check `projectKey === CTP_PROJECT_KEY`.
-- Delete: `use-service-url`, `use-create-api-client`, `ServiceUrlContext`, `use-connect-fetcher` (rewrite on forward-to), the "Connect Project" page's token-paste/API-client UI → becomes a single "Authorize with TikTok" button that opens `TIKTOK_APP_AUTHORIZATION_LINK` (returned by `GET /service/authorization-link`) and polls `GET /service/connection-status`.
-- Local dev: `mc-dev-authentication` + `ts-node-dev` service with verifier pointing at the dev issuer; document.
-- Verification (as owner requested "use forward-to and CT express backend to verify"): integration test that sends a real MC session JWT → 200; missing/invalid → 401; wrong project → 403.
+Reference implementation to mirror: `~/code/commercetools-labs/search-config` (`app/src/hooks/use-search-config-service.ts`, `service/src/auth/merchant-center.ts`, `service/test/support/mc.ts`, connect.yaml, `docs/service-runbook.md`).
+
+**Owner rule: NO MC permission checks.** The connector is assumed deployed into a commercetools organization, so any user who can open the custom application is trusted. Therefore: no `includeUserPermissions`, no permission-claim → role mapping (drop search-config's `rolesFor`, `SC_MC_PERMISSIONS`, `Principal.roles`), no `PERMISSIONS` gating in `mainMenuLink`/`submenuLinks`/UI. We still verify the *session* (signature, issuer, audience, expiry) — that's authentication, not permissions — and keep the project-key match (one deployment = one project, D2).
+
+### mc-app
+- `custom-application-config.mjs`: `additionalEnv: { tiktokServiceUrl: '${env:SERVICE_URL}' }`; `env.production.applicationId/url` from `CUSTOM_APPLICATION_ID`/`APPLICATION_URL`; `cloudIdentifier: '${env:CLOUD_IDENTIFIER}'`; `oAuthScopes` limited to what the UI reads/writes directly via MC GraphQL (stores, channels, product types, products; `manage_stores`/`manage_products`? — decide in step: prefer doing writes through the service to keep scopes `view_*` only). Omit `permissions` from menu links.
+- Hook `useTikTokService()` (mirror of `useSearchConfigService`): reads `ctx.environment.tiktokServiceUrl`, trims trailing `/`, builds
+  `createApolloContextForProxyForwardTo({ uri: `${url}/mc/graphql`... })` **only if we use GraphQL**; our service is REST, so use `executeHttpClientRequest` / `actions.forwardTo` style: `executeHttpClientRequest(async (opts)=>({...}), { userAgent, headers, forwardToConfig: { uri: `${url}/mc/...`, includeUserPermissions: false, audiencePolicy: 'forward-url-full-path' } })` — confirm exact option names with `search_docs`/appkit types when implementing (search-config uses the Apollo variant and `executeHttpClientRequest` for platform calls).
+- Unset `SERVICE_URL` → "service not configured" screen explaining: deploy, copy service URL (ending `/service`), set `SERVICE_URL`, redeploy.
+- Delete `use-service-url`, `ServiceUrlContext`, `use-create-api-client`, `use-connect-fetcher`, Custom-Object reads.
+- "Connect Project" page → single "Authorize with TikTok" button (service `GET /service/mc/authorization-link`) + status poll (`GET /service/mc/connection-status`).
+
+### service
+- `shared/auth/mc-verifier.ts`, adapted from search-config `createMcVerifier`: `createSessionAuthVerifier({ audience: origin(CONNECT_SERVICE_URL), issuer: <from CLOUD_IDENTIFIER>, audiencePolicy, getRequestUrl })`; try `forward-url-full-path` first, `forward-url-origin` fallback (the full path keeps the `/service` prefix on Connect). Issuer mapping from `CLOUD_IDENTIFIER` (e.g. `gcp-us` → `https://mc-api.us-central1.gcp.commercetools.com`; copy search-config's `env.ts` resolution) — new standardConfiguration `CLOUD_IDENTIFIER` (required) on service + mc-app (via `inheritAs`).
+- `CONNECT_SERVICE_URL` is provided by Connect to the service automatically (don't declare). `SERVICE_URL` for mc-app is NOT provided to the app by Connect → manual (D8).
+- Auth middleware attached to `/service/mc/*` and `/service/tiktok/*` only; failures → 401 (invalid/unconfigured) / 403 (other project); no role logic.
+- Tests (mirror `service/test/support/mc.ts` local JWKS issuer): valid token 200; missing/expired/wrong audience/wrong issuer/`alg:none` 401; other project 403; both audience policies accepted. Runs with `commercetools connect application test`.
+- Local dev: mc-app `mc-scripts start` + service via `ts-node-dev`; point `CLOUD_IDENTIFIER` at a local issuer in tests only.
 
 ## 3b. React 19
 Already `react 19.0.0`, `@types/react ^19`. Verify rather than change:

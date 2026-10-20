@@ -40,6 +40,7 @@ Apps in connect.yaml: `mc-app`, `service`, `event`, `refresh-token-job`. Router 
 Shared code moves to a root-level `core/` directory (D6, see 01) instead of 3 copies.
 
 ## Working rules (owner)
+- **No MC permission checks** in mc-app or service (deployed into a commercetools org; any user of the custom app is trusted). Session verification + project-key match stay. Reference: `~/code/commercetools-labs/search-config` (minus its role mapping).
 - **Never commit, never push, never touch `main`.** I only edit the working tree; owner commits. Any later branch/PR/publish step is done only on explicit request, and never directly on main.
 - `core/` in 01–05 means the root `shared/` folder (D6).
 

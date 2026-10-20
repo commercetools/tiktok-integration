@@ -1,0 +1,22 @@
+mutation UpdateStoreCustom(
+  $storeId: String!
+  $version: Long!
+  $actions: [StoreUpdateAction!]!
+) {
+  updateStore(id: $storeId, version: $version, actions: $actions) {
+    id
+    version
+    key
+    custom {
+      type {
+        id
+        key
+      }
+      customFieldsRaw {
+        name
+        value
+      }
+    }
+  }
+}
+

@@ -1,0 +1,68 @@
+deployAs:
+  - name: mc-app
+    applicationType: merchant-center-custom-application
+    configuration:
+      standardConfiguration:
+        - key: CUSTOM_APPLICATION_ID
+          description: The Custom Application ID
+          required: true
+        - key: CLOUD_IDENTIFIER
+          description: The cloud identifier
+          default: 'gcp-us'
+        - key: ENTRY_POINT_URI_PATH
+          description: The Application entry point URI path
+          required: true
+  - name: service
+    applicationType: service
+    endpoint: /service
+    scripts:
+      postDeploy: yarn install && yarn run build && yarn run connector:post-deploy
+    configuration:
+      standardConfiguration:
+        - key: FEATURE_FLAG_ENABLE_TEST_TIKTOK_ROUTES
+          description: Enable test routes
+          required: false
+          default: "false"
+  - name: event
+    applicationType: event
+    endpoint: /event
+    scripts:
+      postDeploy: yarn install && yarn run build && yarn run connector:post-deploy
+      preUndeploy: yarn install && yarn run build && yarn run connector:pre-undeploy
+  - name: refresh-token-job
+    applicationType: job
+    endpoint: /refresh-token-job
+    properties:
+      schedule: "0 */12 * * *"
+inheritAs:
+  configuration:
+    standardConfiguration:
+      - key: CTP_REGION
+        description: commercetools Composable Commerce API region
+        required: true
+        default: "europe-west1.gcp"
+      - key: CTP_PROJECT_KEY
+        description: commercetools Composable Commerce project key
+        required: true
+      - key: CTP_CLIENT_ID
+        description: commercetools Composable Commerce client ID
+        required: true
+      - key: CTP_SCOPE
+        description: commercetools Composable Commerce client scope
+        required: true
+      - key: TIKTOK_SHOP_CODE
+        description: TikTok shop code
+        required: false
+      - key: TIKTOK_SHOP_ID
+        description: TikTok shop ID
+        required: true
+      - key: TIKTOK_SHOP_NAME
+        description: TikTok shop Name
+        required: true
+      - key: ROUTER_SERVICE_URL_ENDPOINT
+        description: Router service URL endpoint
+        required: true
+    securedConfiguration:
+      - key: CTP_CLIENT_SECRET
+        description: commercetools Composable Commerce client secret
+        required: true

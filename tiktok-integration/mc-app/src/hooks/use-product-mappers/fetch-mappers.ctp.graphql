@@ -1,0 +1,24 @@
+query FetchProductMappers($categoryKey: String!, $skuAttributeKey: String!, $productAttributeKey: String!, $container: String!) {
+  categoryMap: customObject(container: $container, key: $categoryKey) {
+    id
+    version
+    container
+    key
+    value
+  }
+  skuAttributeMap: customObject(container: $container, key: $skuAttributeKey) {
+    id
+    version
+    container
+    key
+    value
+  }
+  productAttributeMap: customObject(container: $container, key: $productAttributeKey) {
+    id
+    version
+    container
+    key
+    value
+  }
+}
+

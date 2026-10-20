@@ -1,0 +1,12 @@
+mutation CreateApiClient($draft: CreateApiClient!) {
+  createApiClient(draft: $draft) {
+    id
+    secret
+    name
+    scope
+    accessTokenValiditySeconds
+    deleteAt
+    createdAt
+  }
+}
+

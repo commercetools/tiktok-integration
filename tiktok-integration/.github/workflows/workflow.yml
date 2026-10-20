@@ -1,0 +1,82 @@
+name: Tag Push Trigger
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+jobs:
+  update-and-publish-connector:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Install commercetools CLI
+        run: npm install -g @commercetools/cli
+        
+      - name: Login to commercetools CLI
+        run: |
+          commercetools auth login \
+            --client-credentials \
+            --client-id ${{ vars.CTP_CLIENT_ID }} \
+            --client-secret ${{ secrets.CTP_CLIENT_SECRET }} \
+            --region ${{ vars.CTP_REGION }} \
+            --project-key ${{ vars.CTP_PROJECT_KEY }}
+            
+      - name: Update connector with current tag
+        run: |
+          commercetools connect connectorstaged update \
+            --id ${{ vars.CONNECTOR_ID }} \
+            --repository-tag ${{ github.ref_name }}
+
+      - name: Generate deployment key
+        id: deployment-key
+        run: |
+          LATEST_TAG=${{ github.ref_name }}
+          # Replace invalid characters (dots, slashes, etc.) with hyphens
+          CLEAN_TAG=$(echo "$LATEST_TAG" | sed 's/[^a-zA-Z0-9_-]/-/g')
+          DEPLOYMENT_KEY="tiktok-integration-$CLEAN_TAG"
+          echo "key=$DEPLOYMENT_KEY" >> $GITHUB_OUTPUT
+          echo "Generated deployment key: $DEPLOYMENT_KEY"
+            
+      - name: Create preview deployment
+        run: |
+          # Build the command arguments array
+          ARGS=(
+            "commercetools" "connect" "connectorstaged" "preview"
+            "--id" "${{ vars.CONNECTOR_ID }}"
+            "--deployment-key" "${{ steps.deployment-key.outputs.key }}"
+            "--region" "${{ vars.CTP_REGION }}"
+            # mc-app configuration (from connect.yaml deployAs[0])
+            "--configuration" "mc-app.CUSTOM_APPLICATION_ID=${{ vars.CUSTOM_APPLICATION_ID }}"
+            "--configuration" "mc-app.CLOUD_IDENTIFIER=${{ vars.CLOUD_IDENTIFIER }}"
+            "--configuration" "mc-app.ENTRY_POINT_URI_PATH=${{ vars.ENTRY_POINT_URI_PATH }}"
+            # service configuration (from connect.yaml deployAs[1])
+            "--configuration" "service.FEATURE_FLAG_ENABLE_TEST_TIKTOK_ROUTES=${{ vars.FEATURE_FLAG_ENABLE_TEST_TIKTOK_ROUTES }}"
+            # Inherited configuration (from connect.yaml inheritAs)
+            "--configuration" "CTP_REGION=${{ vars.CTP_REGION }}"
+            "--configuration" "CTP_PROJECT_KEY=${{ vars.CTP_PROJECT_KEY }}"
+            "--configuration" "CTP_CLIENT_ID=${{ vars.CTP_CLIENT_ID }}"
+            "--configuration" "CTP_CLIENT_SECRET=${{ secrets.CTP_CLIENT_SECRET }}"
+            "--configuration" "CTP_SCOPE=${{ vars.CTP_SCOPE }}"
+            "--configuration" "TIKTOK_SHOP_CODE=${{ vars.TIKTOK_SHOP_CODE }}"
+            "--configuration" "TIKTOK_SHOP_ID=${{ vars.TIKTOK_SHOP_ID }}"
+            "--configuration" "TIKTOK_SHOP_NAME=${{ vars.TIKTOK_SHOP_NAME }}"
+            "--configuration" "ROUTER_SERVICE_URL_ENDPOINT=${{ vars.ROUTER_SERVICE_URL_ENDPOINT }}"
+          )
+          
+          "${ARGS[@]}"
+            
+      - name: Output deployment information
+        run: |
+          echo "Preview deployment created successfully!"
+          echo "Deployment key: ${{ steps.deployment-key.outputs.key }}"
+          echo "Region: ${{ vars.CTP_REGION }}"

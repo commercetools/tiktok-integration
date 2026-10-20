@@ -1,0 +1,15 @@
+query FetchProductTypes($limit: Int, $offset: Int, $sort: [String!]) {
+  productTypes(limit: $limit, offset: $offset, sort: $sort) {
+    total
+    count
+    offset
+    results {
+      id
+      version
+      key
+      name
+      description
+    }
+  }
+}
+

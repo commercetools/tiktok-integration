@@ -1,0 +1,3 @@
+ API Get Open Collaboration Product List By Product Ids has been added. 
+ API: Check Product Listing, Create Product, Get Order Detail, Get Order Detail, Get Order List, Get Package Detail, Get Product, Get Transactions by Order, Get Transactions by Statement, Mark Package As Shipped, Recommend Category, Search Package, Search Products, Update Inventory has been upgraded. 
+ API: Edit Product, Partial Edit Product has a new version. 

@@ -1,0 +1,23 @@
+mutation UpdateChannelCustom(
+  $channelId: String!
+  $version: Long!
+  $actions: [ChannelUpdateAction!]!
+) {
+  updateChannel(id: $channelId, version: $version, actions: $actions) {
+    id
+    version
+    key
+    roles
+    custom {
+      type {
+        id
+        key
+      }
+      customFieldsRaw {
+        name
+        value
+      }
+    }
+  }
+}
+

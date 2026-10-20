@@ -1,0 +1,12 @@
+mutation UpdateMapper($container: String!, $key: String!, $value: String!) {
+  createOrUpdateCustomObject(
+    draft: { container: $container, key: $key, value: $value }
+  ) {
+    id
+    version
+    container
+    key
+    value
+  }
+}
+

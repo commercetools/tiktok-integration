@@ -1,0 +1,19 @@
+query FetchProductsByIds($where: String!, $locale: Locale) {
+  products(where: $where, limit: 10) {
+    results {
+      id
+      masterData {
+        current {
+          name(locale: $locale)
+          masterVariant {
+            sku
+            images {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

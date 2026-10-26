@@ -21,7 +21,9 @@ export const encrypt = (plaintext: string, key: Buffer): string => {
     throw new CryptoError('The encryption key must be 32 bytes');
   }
   const iv = randomBytes(IV_BYTES);
-  const cipher = createCipheriv('aes-256-gcm', key, iv);
+  const cipher = createCipheriv('aes-256-gcm', key, iv, {
+    authTagLength: TAG_BYTES,
+  });
   const ciphertext = Buffer.concat([
     cipher.update(plaintext, 'utf8'),
     cipher.final(),
@@ -52,7 +54,9 @@ export const decrypt = (payload: string, key: Buffer): string => {
     throw new CryptoError('Unsupported or malformed encrypted value');
   }
   try {
-    const decipher = createDecipheriv('aes-256-gcm', key, ivBytes);
+    const decipher = createDecipheriv('aes-256-gcm', key, ivBytes, {
+      authTagLength: TAG_BYTES,
+    });
     decipher.setAuthTag(tagBytes);
     return Buffer.concat([
       decipher.update(Buffer.from(ciphertext, 'base64')),

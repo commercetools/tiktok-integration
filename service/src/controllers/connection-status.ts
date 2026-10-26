@@ -1,6 +1,6 @@
-import { isAuthorized, readState } from '../../../shared/state';
-import { getTikTokClient } from '../../../shared/tiktok/client';
-import { TtlCache } from '../../../shared/utils/ttl-cache';
+import { isAuthorized, readState } from 'tiktok-shared/dist/state';
+import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
+import { TtlCache } from 'tiktok-shared/dist/utils/ttl-cache';
 import { parseStoredWarehouses } from '../authorization/shop';
 import {
   readWebhookStatus,

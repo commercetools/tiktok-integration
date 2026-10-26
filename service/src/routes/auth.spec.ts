@@ -1,14 +1,14 @@
 import request from 'supertest';
 import { applyTestEnv } from '../test/support';
 
-jest.mock('../../../shared/logger', () => ({
+jest.mock('tiktok-shared/dist/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 
 applyTestEnv();
 
-import { issueAuthState } from '../../../shared/auth/state';
-import { StoreNotFoundError, TikTokApiError } from '../../../shared/errors';
+import { issueAuthState } from 'tiktok-shared/dist/auth/state';
+import { StoreNotFoundError, TikTokApiError } from 'tiktok-shared/dist/errors';
 import { createApp } from '../app';
 
 describe('GET /service/auth/callback', () => {

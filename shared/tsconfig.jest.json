@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": { "declaration": false, "isolatedModules": true }
+}

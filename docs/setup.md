@@ -1,6 +1,6 @@
 # Setup
 
-One deployment connects one commercetools project to one TikTok shop. Setup has two phases because the TikTok partner app
+One deployment connects one commercetools project to one TikTok shop. Setup has two phases (the SDK, step 1, is part of phase 1) because the TikTok partner app
 needs your service URL, which only exists after the first deploy, and the Merchant Center app needs that same URL as
 configuration.
 
@@ -28,10 +28,33 @@ sequenceDiagram
 ## 0. Before you start
 
 - A TikTok Shop partner app from [Partner Center](https://partner.tiktokshop.com/): note the **app key** and **app secret**. Choose the seller authorization type and the scopes for products, orders, inventory and shop information.
+- The TikTok Shop **Node.js SDK** from Partner Center, see [step 1](#1-add-the-tiktok-nodejs-sdk). It is not part of this repository.
 - A commercetools project and its Merchant Center cloud (`gcp-eu`, `gcp-us`, ...).
 - `openssl rand -base64 32` for `ENCRYPTION_KEY`. Store it somewhere safe; losing it means re-authorizing.
 
-## 1. Register the Merchant Center custom application
+## 1. Add the TikTok Node.js SDK
+
+The connector calls TikTok through TikTok's own Node.js SDK. It is published by TikTok under its own terms, so this repository does not include it: download it from Partner Center and add it to your copy. Do this first, because `service`, `event` and `refresh-token-job` do not compile without it.
+
+1. In [Partner Center](https://partner.tiktokshop.com/), go to **Development kits**, then **SDKs**, and download **Node.js**.
+2. Unzip it into `shared/tiktok-sdk/` so that the contents of the archive sit directly in that folder, not in a subfolder:
+
+   ```text
+   shared/
+   └── tiktok-sdk/
+       ├── README.md
+       ├── api.ts
+       ├── index.ts
+       ├── api/
+       ├── client/
+       ├── model/
+       └── utils/
+   ```
+
+   Do not edit the files by hand; to upgrade, replace the folder with a newer download.
+3. **Commit it together with your code.** Connect builds from your repository at the release tag you deploy, so an SDK that is only on your machine is missing from the deployment and the build fails. Add the folder before you tag the release.
+
+## 2. Register the Merchant Center custom application
 
 In the Merchant Center, Organization settings, Custom applications, register an application with the entry point
 `tiktok-connect` and a placeholder URL. Note its **Application ID**. Connect hosts the application and
@@ -43,13 +66,13 @@ The product selection scopes are only used by the wizard's **create a new store*
 application before they existed, add them to the application's permissions, or the form shows an error when it
 reads or creates product selections.
 
-## 2. Deploy the connector
+## 3. Deploy the connector
 
 Create the connector from this repository and a release tag, then a deployment with:
 
 | Key | Value |
 |-----|-------|
-| `mc-app.CUSTOM_APPLICATION_ID` | the Application ID from step 1 |
+| `mc-app.CUSTOM_APPLICATION_ID` | the Application ID from step 2 |
 | `mc-app.ENTRY_POINT_URI_PATH` | `tiktok-connect` |
 | `mc-app.SERVICE_URL` | leave empty for now |
 | `CTP_REGION` | your API region |
@@ -63,7 +86,7 @@ Connect generates the commercetools API client from the scopes in `connect.yaml`
 [README](../README.md#api-client-scopes)). The first deploy runs the `postDeploy` scripts, which create the
 product and inventory Subscription for `event`.
 
-## 3. Register the URLs in TikTok Partner Center
+## 4. Register the URLs in TikTok Partner Center
 
 These two are the most important settings in the whole setup. Take the **service URL** of the `service` application from
 the deployment (it ends in `/service`) and enter, in your partner app:
@@ -75,7 +98,7 @@ Do this exactly; TikTok sends the redirect to the registered URL only. Leaving o
 and fails silently. See [the README](../README.md#the-two-urls-to-set-in-tiktok-partner-center). Also update the app's Merchant Center custom
 application URL if Connect gives you a new one.
 
-## 4. Apply Terraform
+## 5. Apply Terraform
 
 ```console
 cd terraform
@@ -86,13 +109,13 @@ terraform apply -var-file secrets.tfvars
 
 This creates the channel type and channel, the store type (with the connector's state fields), the store, the order type. Use a dedicated store for TikTok, not your main store. Delete the setup API client after.
 
-## 5. Set `SERVICE_URL` and redeploy `mc-app`
+## 6. Set `SERVICE_URL` and redeploy `mc-app`
 
-Update the deployment's `mc-app.SERVICE_URL` to the service URL from step 3 (ending in `/service`) and **redeploy `mc-app`**.
+Update the deployment's `mc-app.SERVICE_URL` to the service URL from step 4 (ending in `/service`) and **redeploy `mc-app`**.
 Connect does not pass the service URL to the Merchant Center app, so there is no way around this step. Without
 it the app shows a "service not configured" screen.
 
-## 6. Authorize
+## 7. Authorize
 
 The wizard has three steps. TikTok is authorized second because the tokens are saved on the store you choose first.
 
@@ -106,7 +129,7 @@ The wizard has three steps. TikTok is authorized second because the tokens are s
 
 The app status screen then shows the shop name and token expiry. If the saved `warehouseId` is not one of the shop's TikTok warehouses (a typo or a placeholder), the wizard opens at step 3 again so you can replace it.
 
-## 7. First sync
+## 8. First sync
 
 Open the mappings screen, map each product type to a TikTok category and its attributes, run **Full product check** to see
 what TikTok would accept, then **Full product sync**. From then on `event` keeps products and stock in step.
@@ -124,7 +147,7 @@ what TikTok would accept, then **Full product sync**. From then on `event` keeps
 | App says "service not configured" | `SERVICE_URL` set and `mc-app` redeployed; it must end in `/service`. |
 | Redirect shows an error page | Redirect URL in Partner Center must match `<service-url>/auth/callback`; the authorization link is short-lived, request a fresh one. |
 | "A value is required for field 'warehouseId'" | Only seen on older versions of the wizard. Update `mc-app`; the warehouse is now chosen in step 3, after TikTok is authorized. |
-| "The product selections could not be read" in the **create a new store** form | The custom application lacks `view_product_selections` / `manage_product_selections`. Add them to its permissions, see step 1. |
+| "The product selections could not be read" in the **create a new store** form | The custom application lacks `view_product_selections` / `manage_product_selections`. Add them to its permissions, see step 2. |
 | "No TikTok store" on authorization | The wizard has not marked a store `isTikTokShop`, or Terraform has not been applied. |
 | "The setup state could not be read" with 401 (Unauthorized); the wizard is not shown | The service refused the Merchant Center session. `CLOUD_IDENTIFIER` does not match the cloud of your project, or `CONNECT_SERVICE_URL` (service) and `SERVICE_URL` (mc-app) are not the same URL. |
 | "The setup state could not be read" with 403 | The session belongs to a different project than this deployment's `CTP_PROJECT_KEY`. |

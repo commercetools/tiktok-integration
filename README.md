@@ -50,8 +50,8 @@ flowchart LR
 | `refresh-token-job` | job, every 12 hours | Refreshes TikTok tokens before they expire and reconciles orders that webhooks may have missed. |
 
 Shared code (config, commercetools client, encryption, state, TikTok client and signing, mapping engine) lives in
-[`shared/`](shared). It is a plain folder imported by relative path from `service`, `event` and `refresh-token-job`;
-`mc-app` is self-contained and never imports it.
+[`shared/`](shared). It is a Connect [common module](https://docs.commercetools.com/connect/common-modules) that `service`, `event` and
+`refresh-token-job` depend on (`link:../shared`) and build first. `mc-app` is self-contained and never imports it.
 
 All state lives on the commercetools **Store** marked `isTikTokShop`, as custom fields of `tiktok-store-type`
 (shop identity, encrypted tokens, mappings). There is no database and no Custom Object. See
@@ -62,6 +62,7 @@ All state lives on the commercetools **Store** marked `isTikTokShop`, as custom 
 - A commercetools Composable Commerce project and permission to deploy Connect connectors and Merchant Center custom applications.
 - A TikTok Shop seller account and a TikTok Shop **partner app** you own, from [TikTok Shop Partner Center](https://partner.tiktokshop.com/). You need its app key and app secret.
 - [Terraform](https://developer.hashicorp.com/terraform/downloads) and a short-lived API client with `manage_types`, `manage_products`, `manage_stores`.
+- The TikTok Shop **Node.js SDK**, downloaded from Partner Center (**Development kits** > **SDKs** > Node.js) and added to `shared/tiktok-sdk`. It is not in this repository; see [setup step 1](docs/setup.md#1-add-the-tiktok-nodejs-sdk).
 - Node.js 22 and Yarn 1 for local work.
 - A TikTok warehouse set up in Seller Center (the connector pushes stock to it).
 
@@ -92,21 +93,22 @@ walkthrough is in [docs/setup.md](docs/setup.md).
 
 **Phase 1: deploy and register**
 
-1. Generate an encryption key: `openssl rand -base64 32`.
-2. Register the Merchant Center custom application (placeholder URL) to get its `CUSTOM_APPLICATION_ID`.
-3. Deploy the connector with the configuration below. Leave `SERVICE_URL` empty.
-4. Copy the **service URL** Connect shows for the `service` application. It ends in `/service`.
-5. In TikTok Partner Center, open your app and register the [two URLs above](#the-two-urls-to-set-in-tiktok-partner-center):
+1. Download the TikTok Node.js SDK (Partner Center > Development kits > SDKs > Node.js), unzip it into `shared/tiktok-sdk`, and commit it with your code. Connect builds from your repository, so it must be in the tagged release. See [setup step 1](docs/setup.md#1-add-the-tiktok-nodejs-sdk).
+2. Generate an encryption key: `openssl rand -base64 32`.
+3. Register the Merchant Center custom application (placeholder URL) to get its `CUSTOM_APPLICATION_ID`.
+4. Deploy the connector with the configuration below. Leave `SERVICE_URL` empty.
+5. Copy the **service URL** Connect shows for the `service` application. It ends in `/service`.
+6. In TikTok Partner Center, open your app and register the [two URLs above](#the-two-urls-to-set-in-tiktok-partner-center):
    - webhook (callback) URL: `<service-url>/webhook`
    - redirect URL: `<service-url>/auth/callback`
-6. Run Terraform in [`terraform/`](terraform) to create the types, channel and store.
+7. Run Terraform in [`terraform/`](terraform) to create the types, channel and store.
 
 **Phase 2: connect**
 
-7. Set `SERVICE_URL` on `mc-app` to the service URL and **redeploy `mc-app`**. Connect does not pass the service URL to the
+8. Set `SERVICE_URL` on `mc-app` to the service URL and **redeploy `mc-app`**. Connect does not pass the service URL to the
    Merchant Center app, so this redeploy is required. Until then the app shows a "service not configured" screen.
-8. Open the app in the Merchant Center and run the wizard: choose an existing store or create a new one (with its product selection and channels), click **Authorize with TikTok**, then choose the TikTok warehouse from the list TikTok returns.
-9. The callback exchanges the code for tokens, derives the shop id, cipher, region and warehouses, stores them encrypted on the Store, and registers the webhook topics.
+9. Open the app in the Merchant Center and run the wizard: choose an existing store or create a new one (with its product selection and channels), click **Authorize with TikTok**, then choose the TikTok warehouse from the list TikTok returns.
+10. The callback exchanges the code for tokens, derives the shop id, cipher, region and warehouses, stores them encrypted on the Store, and registers the webhook topics.
 
 ## Configuration
 
@@ -244,5 +246,5 @@ cd terraform && terraform init -backend=false && terraform validate
 
 ## Contributing and license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Released under the [MIT License](LICENSE). The vendored TikTok Shop SDK in
-`shared/tiktok-sdk` is generated code published by TikTok.
+See [CONTRIBUTING.md](CONTRIBUTING.md). Released under the [MIT License](LICENSE). The TikTok Shop SDK in
+`shared/tiktok-sdk` is generated code published by TikTok; you download it yourself, see [setup step 1](docs/setup.md#1-add-the-tiktok-nodejs-sdk).

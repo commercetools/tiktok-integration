@@ -1,5 +1,5 @@
-import { readState, saveTokens } from '../../../shared/state';
-import { refreshAccessToken } from '../../../shared/tiktok/auth';
+import { readState, saveTokens } from 'tiktok-shared/dist/state';
+import { refreshAccessToken } from 'tiktok-shared/dist/tiktok/auth';
 import {
   authorizationStatus,
   refreshTokensIfExpiring,
@@ -7,9 +7,9 @@ import {
   REFRESH_WINDOW_SECONDS,
 } from './tokens';
 
-jest.mock('../../../shared/state', () => ({ readState: jest.fn(), saveTokens: jest.fn() }));
-jest.mock('../../../shared/tiktok/auth', () => ({ refreshAccessToken: jest.fn() }));
-jest.mock('../../../shared/logger', () => ({ logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } }));
+jest.mock('tiktok-shared/dist/state', () => ({ readState: jest.fn(), saveTokens: jest.fn() }));
+jest.mock('tiktok-shared/dist/tiktok/auth', () => ({ refreshAccessToken: jest.fn() }));
+jest.mock('tiktok-shared/dist/logger', () => ({ logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } }));
 
 const NOW = 1_800_000_000;
 const DAY = 86_400;

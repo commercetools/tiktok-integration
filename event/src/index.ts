@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { readConfiguration } from '../../shared/config';
-import { logger } from '../../shared/logger';
+import { readConfiguration } from 'tiktok-shared/dist/config';
+import { logger } from 'tiktok-shared/dist/logger';
 import app from './app';
 
 readConfiguration();

@@ -1,6 +1,6 @@
 import express, { type Express } from 'express';
-import { createMcAuthMiddleware, createMcVerifierFromConfiguration } from '../../shared/auth/mc-verifier';
-import { logger } from '../../shared/logger';
+import { createMcAuthMiddleware, createMcVerifierFromConfiguration } from 'tiktok-shared/dist/auth/mc-verifier';
+import { logger } from 'tiktok-shared/dist/logger';
 import { type AuthorizationInput, type AuthorizationResult } from './authorization/complete-authorization';
 import { HttpError } from './errors/http-error';
 import { errorMiddleware } from './middleware/error.middleware';

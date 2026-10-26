@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { createApiRoot } from '../../../shared/commercetools/client';
+import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
 import { destinationFromEnv, ensureSubscription } from './actions';
 
 async function run(): Promise<void> {

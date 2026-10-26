@@ -1,8 +1,8 @@
 import type { ByProjectKeyRequestBuilder, Order } from '@commercetools/platform-sdk';
-import { logger } from '../../../shared/logger';
-import { getShopContext } from '../../../shared/services';
-import { syncTiktokOrder } from '../../../shared/services/order-sync.service';
-import type { TikTokClient } from '../../../shared/tiktok/client';
+import { logger } from 'tiktok-shared/dist/logger';
+import { getShopContext } from 'tiktok-shared/dist/services';
+import { syncTiktokOrder } from 'tiktok-shared/dist/services/order-sync.service';
+import type { TikTokClient } from 'tiktok-shared/dist/tiktok/client';
 
 type SearchedOrder = NonNullable<
   Awaited<ReturnType<TikTokClient['orders']['search']>>['orders']

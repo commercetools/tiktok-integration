@@ -1,6 +1,6 @@
-import { logger } from '../../../shared/logger';
-import { getTikTokStore, readState, saveTokens } from '../../../shared/state';
-import { exchangeAuthCode } from '../../../shared/tiktok/auth';
+import { logger } from 'tiktok-shared/dist/logger';
+import { getTikTokStore, readState, saveTokens } from 'tiktok-shared/dist/state';
+import { exchangeAuthCode } from 'tiktok-shared/dist/tiktok/auth';
 import {
   buildShopClient,
   localeOrDefault,

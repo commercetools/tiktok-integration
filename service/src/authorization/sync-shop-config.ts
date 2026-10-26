@@ -1,5 +1,5 @@
-import { getValidAccessToken, readState } from '../../../shared/state';
-import { NotAuthorizedError } from '../../../shared/errors';
+import { getValidAccessToken, readState } from 'tiktok-shared/dist/state';
+import { NotAuthorizedError } from 'tiktok-shared/dist/errors';
 import { buildShopClient, persistShop, pickShop, refreshWarehouses } from './shop';
 
 export interface ShopConfigSyncResult {

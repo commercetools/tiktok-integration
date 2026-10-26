@@ -20,10 +20,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Build the shared module
+        if: matrix.app != 'mc-app'
+        run: yarn --cwd ../shared install --frozen-lockfile && yarn --cwd ../shared run build
       - run: yarn install --frozen-lockfile
       - run: yarn tsc --noEmit
       - run: yarn test --passWithNoTests
       - run: yarn build
+
+  shared:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shared
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: yarn install --frozen-lockfile
+      - run: yarn tsc --noEmit
+      - run: yarn test
 
   terraform:
     runs-on: ubuntu-latest

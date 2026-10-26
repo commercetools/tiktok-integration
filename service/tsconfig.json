@@ -1,22 +1,25 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
-  "include": ["src", "../shared"],
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     "build",
     "**/*.spec.ts",
-    "src/test",
-    "../shared/test",
-    "../shared/**/*.spec.ts",
-    "../shared/**/__snapshots__",
-    "../shared/tiktok-sdk/**/*.md"
+    "src/test"
   ],
   "compilerOptions": {
     "resolveJsonModule": true,
     "outDir": "./build",
-    "rootDir": "..",
+    "rootDir": ".",
     "baseUrl": ".",
-    "paths": { "*": ["./node_modules/*", "./node_modules/@types/*"] },
+    "paths": {
+      "*": [
+        "./node_modules/*",
+        "./node_modules/@types/*"
+      ]
+    },
     "inlineSourceMap": true
   }
 }

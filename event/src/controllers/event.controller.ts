@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { logger } from '../../../shared/logger';
-import { isAuthorized } from '../../../shared/state';
+import { logger } from 'tiktok-shared/dist/logger';
+import { isAuthorized } from 'tiktok-shared/dist/state';
 import { BadEnvelopeError, decodeEnvelope } from '../envelope';
 import { handleMessage } from '../handlers';
 import { isTransientError } from '../transient';

@@ -3,15 +3,15 @@ import request from 'supertest';
 import { startIssuer, type LocalIssuer } from '../../../shared/test/support/mc';
 import { applyTestEnv } from '../test/support';
 
-jest.mock('../../../shared/logger', () => ({
+jest.mock('tiktok-shared/dist/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
-jest.mock('../../../shared/state');
-jest.mock('../../../shared/tiktok/client');
+jest.mock('tiktok-shared/dist/state');
+jest.mock('tiktok-shared/dist/tiktok/client');
 
-import { verifyAuthState } from '../../../shared/auth/state';
-import { isAuthorized, readState, writeState } from '../../../shared/state';
-import { getTikTokClient } from '../../../shared/tiktok/client';
+import { verifyAuthState } from 'tiktok-shared/dist/auth/state';
+import { isAuthorized, readState, writeState } from 'tiktok-shared/dist/state';
+import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
 import { createApp } from '../app';
 
 const ORIGIN = 'https://svc.example';

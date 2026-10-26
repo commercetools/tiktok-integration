@@ -1,7 +1,7 @@
-import { createApiRoot } from '../../../shared/commercetools/client';
-import { getShopContext } from '../../../shared/services/shop-context.service';
-import { clearAuthorization, readState } from '../../../shared/state';
-import { getTikTokClient } from '../../../shared/tiktok/client';
+import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
+import { getShopContext } from 'tiktok-shared/dist/services/shop-context.service';
+import { clearAuthorization, readState } from 'tiktok-shared/dist/state';
+import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
 import { createWebhookProcessor } from './processor';
 
 /** The processor wired to the real state, commercetools project and TikTok shop. */

@@ -1,7 +1,7 @@
-import { logger } from '../../../shared/logger';
-import { readState, saveTokens } from '../../../shared/state';
-import type { TikTokState } from '../../../shared/state';
-import { refreshAccessToken } from '../../../shared/tiktok/auth';
+import { logger } from 'tiktok-shared/dist/logger';
+import { readState, saveTokens } from 'tiktok-shared/dist/state';
+import type { TikTokState } from 'tiktok-shared/dist/state';
+import { refreshAccessToken } from 'tiktok-shared/dist/tiktok/auth';
 
 const HOUR = 3600;
 const DAY = 24 * HOUR;

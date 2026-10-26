@@ -1,19 +1,19 @@
 {
-  "name": "tiktok-integration-event",
+  "name": "@commercetools-labs/tiktok-integration-event",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "gcp-build": "tsc",
-    "start": "node build/event/src/index.js",
-    "start:dev": "concurrently -k \"tsc --watch\" \"nodemon -q build/event/src/index.js\"",
-    "build": "rimraf ./build && tsc",
+    "gcp-build": "yarn --cwd ../shared install && yarn --cwd ../shared run build && tsc",
+    "start": "node build/src/index.js",
+    "start:dev": "concurrently -k \"tsc --watch\" \"nodemon -q build/src/index.js\"",
+    "build": "yarn --cwd ../shared install && yarn --cwd ../shared run build && rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "prettier": "prettier --write '**/*.{js,ts}'",
-    "test": "jest",
-    "connector:post-deploy": "node build/event/src/connector/post-deploy.js",
-    "connector:pre-undeploy": "node build/event/src/connector/pre-undeploy.js"
+    "test": "yarn run build && jest",
+    "connector:post-deploy": "node build/src/connector/post-deploy.js",
+    "connector:pre-undeploy": "node build/src/connector/pre-undeploy.js"
   },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.3",
@@ -42,6 +42,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "request": "^2.88.2",
+    "tiktok-shared": "link:../shared",
     "zod": "^4.6.7"
   },
   "resolutions": {

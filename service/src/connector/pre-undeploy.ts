@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { logger } from '../../../shared/logger';
+import { logger } from 'tiktok-shared/dist/logger';
 
 /**
  * Nothing is deleted on undeploy: the Store keeps the shop identity, mapping and (encrypted)

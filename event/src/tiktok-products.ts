@@ -2,14 +2,14 @@ import type {
   ByProjectKeyRequestBuilder,
   ProductProjection,
 } from '@commercetools/platform-sdk';
-import { getTikTokStore } from '../../shared/state';
-import { getShopContext } from '../../shared/services';
-import type { ShopContext } from '../../shared/interfaces';
-import * as Mappers from '../../shared/mappers';
-import { createApiRoot } from '../../shared/commercetools/client';
-import { logger } from '../../shared/logger';
-import { getTikTokClient, type TikTokClient } from '../../shared/tiktok/client';
-import type { Product202502SearchProductsResponseDataProducts } from '../../shared/tiktok-sdk';
+import { getTikTokStore } from 'tiktok-shared/dist/state';
+import { getShopContext } from 'tiktok-shared/dist/services';
+import type { ShopContext } from 'tiktok-shared/dist/interfaces';
+import * as Mappers from 'tiktok-shared/dist/mappers';
+import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
+import { logger } from 'tiktok-shared/dist/logger';
+import { getTikTokClient, type TikTokClient } from 'tiktok-shared/dist/tiktok/client';
+import type { Product202502SearchProductsResponseDataProducts } from 'tiktok-shared/dist/tiktok-sdk';
 
 /** TikTok accepts at most 9 main images per product and 100 search results per page. */
 const MAX_MAIN_IMAGES = 9;

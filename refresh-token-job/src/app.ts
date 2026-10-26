@@ -1,5 +1,5 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
-import { logger } from '../../shared/logger';
+import { logger } from 'tiktok-shared/dist/logger';
 import { post } from './controllers/job.controller';
 
 const app: Express = express();

@@ -2,13 +2,13 @@ import { createHmac } from 'node:crypto';
 import request from 'supertest';
 import { applyTestEnv } from '../test/support';
 
-jest.mock('../../../shared/logger', () => ({
+jest.mock('tiktok-shared/dist/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 
 applyTestEnv();
 
-import { logger } from '../../../shared/logger';
+import { logger } from 'tiktok-shared/dist/logger';
 import { createApp } from '../app';
 
 // Official test vector from the TikTok Shop Partner Center webhook documentation.

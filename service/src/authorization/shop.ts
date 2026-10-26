@@ -1,8 +1,8 @@
-import { readConfiguration } from '../../../shared/config';
-import { NotAuthorizedError } from '../../../shared/errors';
-import { logger } from '../../../shared/logger';
-import { writeState } from '../../../shared/state';
-import { createTikTokClient, type TikTokClient } from '../../../shared/tiktok/client';
+import { readConfiguration } from 'tiktok-shared/dist/config';
+import { NotAuthorizedError } from 'tiktok-shared/dist/errors';
+import { logger } from 'tiktok-shared/dist/logger';
+import { writeState } from 'tiktok-shared/dist/state';
+import { createTikTokClient, type TikTokClient } from 'tiktok-shared/dist/tiktok/client';
 
 export type AuthorizedShop = Awaited<ReturnType<TikTokClient['shops']['getAuthorized']>>[number];
 

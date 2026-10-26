@@ -1,13 +1,13 @@
 import request from 'supertest';
-import { readState } from '../../../shared/state';
+import { readState } from 'tiktok-shared/dist/state';
 import { reconcileOrders } from '../jobs/reconcile-orders';
 import { refreshTokensIfExpiring } from '../jobs/tokens';
 import app from '../app';
 
-jest.mock('../../../shared/state', () => ({ readState: jest.fn() }));
-jest.mock('../../../shared/commercetools/client', () => ({ createApiRoot: jest.fn(() => ({})) }));
-jest.mock('../../../shared/tiktok/client', () => ({ getTikTokClient: jest.fn(async () => ({})) }));
-jest.mock('../../../shared/logger', () => ({ logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } }));
+jest.mock('tiktok-shared/dist/state', () => ({ readState: jest.fn() }));
+jest.mock('tiktok-shared/dist/commercetools/client', () => ({ createApiRoot: jest.fn(() => ({})) }));
+jest.mock('tiktok-shared/dist/tiktok/client', () => ({ getTikTokClient: jest.fn(async () => ({})) }));
+jest.mock('tiktok-shared/dist/logger', () => ({ logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } }));
 jest.mock('../jobs/reconcile-orders');
 jest.mock('../jobs/tokens', () => ({
   ...jest.requireActual('../jobs/tokens'),

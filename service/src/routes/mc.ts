@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { loadMappingConfig, saveMappingConfig } from '../../../shared/mappings';
+import { loadMappingConfig, saveMappingConfig } from 'tiktok-shared/dist/mappings';
 import { syncShopConfig } from '../authorization/sync-shop-config';
 import { buildAuthorizationLink } from '../controllers/authorization-link';
 import { getConnectionStatus } from '../controllers/connection-status';

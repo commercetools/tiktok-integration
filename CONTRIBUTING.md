@@ -15,13 +15,12 @@ commercetools (see [SUPPORT.md](SUPPORT.md)), so reviews happen when maintainers
 connect.yaml            the Connect install contract (all four applications)
 service/ event/ refresh-token-job/   backend applications, each with its own package.json
 mc-app/                 Merchant Center custom application (self-contained; must not import shared/)
-shared/                 code used by the three backends, imported by relative path
+shared/                 common module the three backends depend on (see below)
 terraform/              custom types, channel and store
 docs/                   setup, webhooks, token storage
 ```
 
-`shared/` has no `package.json`. Every backend lists all the dependencies the shared code it imports needs, at the
-same versions. `shared/tiktok-sdk` is vendored generated code; do not edit it by hand.
+`shared/` is a Connect [common module](https://docs.commercetools.com/connect/common-modules): a package named `tiktok-shared` that `service`, `event` and `refresh-token-job` depend on as `"tiktok-shared": "link:../shared"` and import as `tiktok-shared/dist/<module>`. Their `build` script builds it first (`yarn --cwd ../shared install && yarn --cwd ../shared run build`), so after editing `shared/` just run the app's `yarn build` or `yarn test`. Its own tests run with `cd shared && yarn test`. Dependencies that shared code imports belong in `shared/package.json`. `shared/tiktok-sdk` is TikTok's generated Node.js SDK, which you download yourself (see [docs/setup.md](docs/setup.md#1-add-the-tiktok-nodejs-sdk)); do not edit it by hand.
 
 ## Working on a change
 

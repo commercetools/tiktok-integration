@@ -3,7 +3,7 @@ import type {
   ProductTailoringPublishedMessage,
   ProductTailoringUnpublishedMessage,
 } from '@commercetools/platform-sdk';
-import { logger } from '../../../shared/logger';
+import { logger } from 'tiktok-shared/dist/logger';
 import { getStoreProjection } from '../commercetools';
 import { syncProduct, type SyncContext } from '../tiktok-products';
 import { publishProduct, unpublishProduct } from './product';

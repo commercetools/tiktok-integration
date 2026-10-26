@@ -1,11 +1,11 @@
 import request from 'supertest';
 import app from '../app';
-import { isAuthorized } from '../../../shared/state';
+import { isAuthorized } from 'tiktok-shared/dist/state';
 import { handleMessage } from '../handlers';
 
-jest.mock('../../../shared/state', () => ({ isAuthorized: jest.fn() }));
+jest.mock('tiktok-shared/dist/state', () => ({ isAuthorized: jest.fn() }));
 jest.mock('../handlers', () => ({ handleMessage: jest.fn() }));
-jest.mock('../../../shared/logger', () => ({
+jest.mock('tiktok-shared/dist/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 

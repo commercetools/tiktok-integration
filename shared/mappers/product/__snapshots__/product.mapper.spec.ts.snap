@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildTiktokProductDraft maps a product with mapped attributes, prices, inventory and package data 1`] = `
+{
+  "categoryId": "2268304",
+  "categoryVersion": "v2",
+  "description": "A mug",
+  "externalProductId": "prod-1",
+  "packageDimensions": {
+    "height": "10",
+    "length": "20",
+    "unit": "CENTIMETER",
+    "width": "5",
+  },
+  "packageWeight": {
+    "unit": "KILOGRAM",
+    "value": "1.235",
+  },
+  "productAttributes": [
+    {
+      "id": "101619",
+      "values": [
+        {
+          "id": "1000059",
+        },
+      ],
+    },
+    {
+      "id": "7",
+      "values": [
+        {
+          "name": "cotton",
+        },
+      ],
+    },
+  ],
+  "saveMode": "LISTING",
+  "skus": [
+    {
+      "externalSkuId": "SKU-1",
+      "inventory": [
+        {
+          "quantity": 5,
+          "warehouseId": "wh-1",
+        },
+      ],
+      "listPrice": {
+        "amount": "29.99",
+        "currency": "USD",
+      },
+      "price": {
+        "amount": "19.99",
+        "currency": "USD",
+        "salePrice": "14.99",
+      },
+      "salesAttributes": [
+        {
+          "id": "100000",
+          "valueName": "Red",
+        },
+      ],
+      "sellerSku": "SKU-1",
+    },
+    {
+      "externalSkuId": "SKU-2",
+      "inventory": [
+        {
+          "quantity": 5,
+          "warehouseId": "wh-1",
+        },
+      ],
+      "listPrice": {
+        "amount": "29.99",
+        "currency": "USD",
+      },
+      "price": {
+        "amount": "19.99",
+        "currency": "USD",
+        "salePrice": "14.99",
+      },
+      "salesAttributes": [
+        {
+          "id": "100000",
+          "valueName": "Red",
+        },
+      ],
+      "sellerSku": "SKU-2",
+    },
+  ],
+  "title": "Mug",
+}
+`;

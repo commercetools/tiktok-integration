@@ -1,0 +1,99 @@
+# TikTok Shop <-> commercetools connector: one deployment = one commercetools project + one TikTok shop.
+#
+# Applications
+#   mc-app             Merchant Center custom application (setup wizard, authorization, product mappings, sync).
+#   service            TikTok-facing and Merchant Center-facing HTTP API under /service
+#                      (/service/webhook, /service/auth/callback, /service/mc/*, /service/tiktok/*).
+#   event              Subscription consumer: commercetools product and inventory messages -> TikTok.
+#   refresh-token-job  Scheduled: refreshes TikTok tokens and reconciles orders TikTok webhooks may have missed.
+#
+# Keys more than one application reads are declared once, under inheritAs.configuration.
+# Connect provides these itself, so they are not declared here:
+#   - CTP_CLIENT_ID, CTP_CLIENT_SECRET, CTP_SCOPE, CTP_PROJECT_KEY, CTP_API_URL, CTP_AUTH_URL (from inheritAs.apiClient)
+#   - CONNECT_SERVICE_URL (service), CONNECT_* topic variables (event), APPLICATION_URL (mc-app)
+deployAs:
+  - name: mc-app
+    applicationType: merchant-center-custom-application
+    configuration:
+      # Within each block: grouped by context, required keys before optional ones.
+      standardConfiguration:
+        # Merchant Center custom application (required)
+        - key: CUSTOM_APPLICATION_ID
+          description: The Application ID the Merchant Center shows after the custom application is registered
+          required: true
+        - key: ENTRY_POINT_URI_PATH
+          description: The entry point URI path the custom application is registered with
+          required: true
+          default: tiktok-connect
+        # Connection to the service (optional)
+        - key: SERVICE_URL
+          description: >-
+            Public URL of the service application, ending in /service. Connect does not hand it to the
+            Merchant Center app, so set it manually after the first deploy (copy it from the deployment's
+            service URL), then redeploy mc-app. Until it is set the app shows a "service not configured" screen.
+          required: false
+  - name: service
+    applicationType: service
+    endpoint: /service
+    scripts:
+      postDeploy: yarn install && yarn run build && yarn run connector:post-deploy
+      preUndeploy: yarn install && yarn run build && yarn run connector:pre-undeploy
+  - name: event
+    applicationType: event
+    endpoint: /event
+    scripts:
+      postDeploy: yarn install && yarn run build && yarn run connector:post-deploy
+      preUndeploy: yarn install && yarn run build && yarn run connector:pre-undeploy
+  - name: refresh-token-job
+    applicationType: job
+    endpoint: /refresh-token-job
+    properties:
+      schedule: "0 */12 * * *"
+inheritAs:
+  # Shared by every application. Within each block: grouped by context, required keys before optional ones.
+  configuration:
+    standardConfiguration:
+      # commercetools (required)
+      - key: CTP_REGION
+        description: commercetools Composable Commerce API region, for example europe-west1.gcp or us-central1.gcp
+        required: true
+        default: "europe-west1.gcp"
+      - key: CLOUD_IDENTIFIER
+        description: Merchant Center cloud identifier of the project's region, for example gcp-eu or gcp-us. It is the cloud of the custom application and selects the issuer the service accepts Merchant Center sessions from
+        required: true
+        default: "gcp-eu"
+      # TikTok (required)
+      - key: TIKTOK_APP_KEY
+        description: App key of your own TikTok Shop partner app (Partner Center, app overview)
+        required: true
+      # TikTok (optional)
+      - key: TIKTOK_APP_AUTHORIZATION_LINK
+        description: Authorization link of your TikTok partner app. Optional; when empty the Merchant Center app builds the link from TIKTOK_APP_KEY
+        required: false
+    securedConfiguration:
+      # TikTok (required)
+      - key: TIKTOK_APP_SECRET
+        description: App secret of your TikTok partner app. Verifies webhook signatures and signs TikTok API calls
+        required: true
+      # Token storage (required)
+      - key: ENCRYPTION_KEY
+        description: 32 random bytes, base64 encoded (openssl rand -base64 32). AES-256-GCM key that encrypts the TikTok tokens stored on the Store; also signs the OAuth state. Rotating it requires re-authorizing the shop
+        required: true
+  apiClient:
+    scopes:
+      # Read products, product types, channels, inventory entries and product tailoring to build TikTok listings and stock.
+      - view_products
+      # Expand category references while mapping product categories.
+      - view_categories
+      # Read and write the TikTok fields (tokens, shop identity, mappings) on the Store.
+      - manage_stores
+      # Resolve the custom types (tiktok-order-info, tiktok-store-type) when writing orders and store fields.
+      - view_types
+      # Order states used when TikTok orders are imported and their status changes.
+      - view_states
+      # Import TikTok orders and apply status, cancellation and return updates.
+      - manage_orders
+      # Record the payment of imported TikTok orders.
+      - manage_payments
+      # The event application's postDeploy creates the product and inventory Subscription (and preUndeploy removes it).
+      - manage_subscriptions

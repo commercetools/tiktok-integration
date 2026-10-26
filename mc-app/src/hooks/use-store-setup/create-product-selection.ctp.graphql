@@ -1,0 +1,7 @@
+mutation CreateProductSelection($draft: CreateProductSelectionDraft!) {
+  createProductSelection(draft: $draft) {
+    id
+    version
+    key
+  }
+}

@@ -1,0 +1,12 @@
+node_modules
+coverage
+build/
+public/
+.terraform
+*.tfstate*
+*.tfvars
+.env
+.env.local
+.DS_Store
+.vscode
+.connect/

@@ -1,0 +1,7 @@
+mutation CreateStore($draft: CreateStore!) {
+  createStore(draft: $draft) {
+    id
+    version
+    key
+  }
+}

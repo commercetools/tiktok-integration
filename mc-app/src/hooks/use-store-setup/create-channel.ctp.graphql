@@ -1,0 +1,8 @@
+mutation CreateChannel($draft: ChannelDraft!) {
+  createChannel(draft: $draft) {
+    id
+    version
+    key
+    roles
+  }
+}

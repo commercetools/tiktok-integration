@@ -1,7 +1,7 @@
 import { Router, type Request } from 'express';
-import { verifyAuthState } from 'tiktok-shared/dist/auth/state';
-import { NotAuthorizedError, StoreNotFoundError, TikTokApiError } from 'tiktok-shared/dist/errors';
-import { logger } from 'tiktok-shared/dist/logger';
+import { verifyAuthState } from 'tiktok-shared/dist/src/auth/state';
+import { NotAuthorizedError, StoreNotFoundError, TikTokApiError } from 'tiktok-shared/dist/src/errors';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import {
   completeAuthorization,
   type AuthorizationInput,

@@ -1,5 +1,5 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
-import * as Mappers from 'tiktok-shared/dist/mappers';
+import * as Mappers from 'tiktok-shared/dist/src/mappers';
 import {
   findStoreProjectionBySku,
   getInventoryEntry,
@@ -12,14 +12,14 @@ import { handleProductMessage } from './product';
 import { handleProductTailoringMessage } from './product-tailoring';
 
 jest.mock('../commercetools');
-jest.mock('tiktok-shared/dist/mappers', () => ({
+jest.mock('tiktok-shared/dist/src/mappers', () => ({
   Product: {
     commercetoolsProductToTiktokProduct: jest.fn(),
     mergeTiktokProductAndCommercetoolsProductToTiktokProductEdit: jest.fn(),
   },
   Inventory: { mapCommercetoolsInventoryToTiktokInventory: jest.fn() },
 }));
-jest.mock('tiktok-shared/dist/logger', () => ({
+jest.mock('tiktok-shared/dist/src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
 

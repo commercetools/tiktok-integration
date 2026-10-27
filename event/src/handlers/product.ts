@@ -3,7 +3,7 @@ import type {
   ProductPublishedMessage,
   ProductUnpublishedMessage,
 } from '@commercetools/platform-sdk';
-import { logger } from 'tiktok-shared/dist/logger';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import { getProduct, getStoreProjection } from '../commercetools';
 import {
   removeTiktokProducts,

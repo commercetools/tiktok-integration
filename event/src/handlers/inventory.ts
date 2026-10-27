@@ -4,8 +4,8 @@ import type {
   InventoryEntryDeletedMessage,
   InventoryEntryQuantitySetMessage,
 } from '@commercetools/platform-sdk';
-import * as Mappers from 'tiktok-shared/dist/mappers';
-import { logger } from 'tiktok-shared/dist/logger';
+import * as Mappers from 'tiktok-shared/dist/src/mappers';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import { findStoreProjectionBySku, getInventoryEntry } from '../commercetools';
 import {
   findTiktokProductsBySkus,

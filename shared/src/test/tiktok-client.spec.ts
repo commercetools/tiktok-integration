@@ -5,7 +5,7 @@ const shopsGet = jest.fn();
 const categoriesGet = jest.fn();
 const ordersSearchPost = jest.fn();
 
-jest.mock('../tiktok-sdk', () => ({
+jest.mock('../../tiktok-sdk', () => ({
   TikTokShopNodeApiClient: jest.fn().mockImplementation(() => ({
     api: {
       ProductV202309Api: { ProductsPost: productsPost, CategoriesGet: categoriesGet },
@@ -14,7 +14,7 @@ jest.mock('../tiktok-sdk', () => ({
     },
   })),
 }));
-jest.mock('../tiktok-sdk/api/apis', () => ({}));
+jest.mock('../../tiktok-sdk/api/apis', () => ({}));
 jest.mock('../state', () => ({ getValidAccessToken: jest.fn(), readState: jest.fn() }));
 jest.mock('../config', () => ({ readConfiguration: jest.fn() }));
 

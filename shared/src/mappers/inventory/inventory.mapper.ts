@@ -2,7 +2,7 @@ import type { InventoryEntry } from '@commercetools/platform-sdk';
 import type {
   Product202309UpdateInventoryRequestBody,
   Product202502SearchProductsResponseDataProducts,
-} from '../../tiktok-sdk';
+} from '../../../tiktok-sdk';
 import type { ShopContext } from '../../interfaces';
 
 export const mapCommercetoolsInventoryToTiktokInventory = (

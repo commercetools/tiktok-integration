@@ -1,8 +1,8 @@
 import type { ByProjectKeyRequestBuilder, Order } from '@commercetools/platform-sdk';
-import { logger } from 'tiktok-shared/dist/logger';
-import { getShopContext } from 'tiktok-shared/dist/services';
-import { syncTiktokOrder } from 'tiktok-shared/dist/services/order-sync.service';
-import type { TikTokClient } from 'tiktok-shared/dist/tiktok/client';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import { getShopContext } from 'tiktok-shared/dist/src/services';
+import { syncTiktokOrder } from 'tiktok-shared/dist/src/services/order-sync.service';
+import type { TikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
 
 type SearchedOrder = NonNullable<
   Awaited<ReturnType<TikTokClient['orders']['search']>>['orders']
@@ -77,6 +77,54 @@ export const needsSync = (existing: Order | undefined, searched: SearchedOrder):
   return updatedSince || statusChanged;
 };
 
+type SyncOrder = NonNullable<ReconcileDeps['syncOrder']>;
+
+const resolveSyncOrder = (deps: ReconcileDeps): SyncOrder =>
+  deps.syncOrder ??
+  ((tiktokOrderId: string) =>
+    syncTiktokOrder(
+      {
+        apiRoot: deps.apiRoot,
+        tiktok: deps.client,
+        getShopContext: () => getShopContext(deps.apiRoot),
+      },
+      tiktokOrderId,
+    ));
+
+/**
+ * Syncs the orders of one page that differ from commercetools. Returns false when the time
+ * budget ran out before the page was finished.
+ */
+const reconcilePage = async (
+  orders: (SearchedOrder & { id: string })[],
+  existing: Map<string, Order>,
+  syncOrder: SyncOrder,
+  result: ReconcileResult,
+  timeIsUp: () => boolean,
+): Promise<boolean> => {
+  for (const order of orders) {
+    if (timeIsUp()) {
+      result.truncated = true;
+      return false;
+    }
+    if (!needsSync(existing.get(order.id), order)) {
+      result.alreadyInSync += 1;
+      continue;
+    }
+    try {
+      await syncOrder(order.id);
+      result.synced += 1;
+    } catch (error) {
+      result.failed += 1;
+      logger.error('Reconciling a TikTok order failed', {
+        tiktokOrderId: order.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+  return true;
+};
+
 /**
  * Webhooks are not a guaranteed source of truth, so this pass compares TikTok's recently
  * updated orders with commercetools and syncs any that differ. Idempotent: the order sync
@@ -87,17 +135,7 @@ export const reconcileOrders = async (deps: ReconcileDeps): Promise<ReconcileRes
   const deadline = now() + TIME_BUDGET_MS;
   const until = Math.floor(now() / 1000);
   const filter = { updateTimeGe: until - LOOKBACK_SECONDS, updateTimeLt: until };
-  const syncOrder =
-    deps.syncOrder ??
-    ((tiktokOrderId: string) =>
-      syncTiktokOrder(
-        {
-          apiRoot: deps.apiRoot,
-          tiktok: deps.client,
-          getShopContext: () => getShopContext(deps.apiRoot),
-        },
-        tiktokOrderId,
-      ));
+  const syncOrder = resolveSyncOrder(deps);
 
   const result: ReconcileResult = {
     searched: 0,
@@ -120,25 +158,8 @@ export const reconcileOrders = async (deps: ReconcileDeps): Promise<ReconcileRes
         ? await loadCommercetoolsOrders(deps.apiRoot, orders.map(({ id }) => id))
         : new Map<string, Order>();
 
-    for (const order of orders) {
-      if (now() >= deadline) {
-        result.truncated = true;
-        return result;
-      }
-      if (!needsSync(existing.get(order.id), order)) {
-        result.alreadyInSync += 1;
-        continue;
-      }
-      try {
-        await syncOrder(order.id);
-        result.synced += 1;
-      } catch (error) {
-        result.failed += 1;
-        logger.error('Reconciling a TikTok order failed', {
-          tiktokOrderId: order.id,
-          error: error instanceof Error ? error.message : String(error),
-        });
-      }
+    if (!(await reconcilePage(orders, existing, syncOrder, result, () => now() >= deadline))) {
+      return result;
     }
     pageToken = page.nextPageToken || undefined;
   } while (pageToken);

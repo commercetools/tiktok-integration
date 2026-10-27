@@ -31,6 +31,62 @@ const SOURCES = [
   { value: 'constant', label: 'A constant value' },
 ];
 
+const mappingTitle = (
+  mapping: AttributeMapping,
+  tiktokAttribute: TikTokAttribute | undefined
+): string => {
+  const source =
+    mapping.name ||
+    mapping.ctAttribute ||
+    (mapping.constantValues ? 'Constant value' : 'Unmapped attribute');
+  const target =
+    tiktokAttribute?.name ??
+    (mapping.tiktokAttributeId || 'no TikTok attribute');
+  return `${source} to ${target}`;
+};
+
+const withName = (
+  mapping: AttributeMapping,
+  name: string
+): AttributeMapping => {
+  const { name: _previous, ...rest } = mapping;
+  return name ? { ...rest, name } : rest;
+};
+
+const withSource = (
+  mapping: AttributeMapping,
+  source: string
+): AttributeMapping => {
+  const {
+    ctAttribute: _a,
+    constantValues: _c,
+    transform: _t,
+    valueMap: _v,
+    ...rest
+  } = mapping;
+  return source === 'constant'
+    ? { ...rest, constantValues: [] }
+    : { ...rest, ctAttribute: '' };
+};
+
+const withTransform = (
+  mapping: AttributeMapping,
+  transform: string
+): AttributeMapping => {
+  const { transform: _previous, ...rest } = mapping;
+  return transform === 'identity'
+    ? rest
+    : { ...rest, transform: transform as AttributeTransform };
+};
+
+const withValueMap = (
+  mapping: AttributeMapping,
+  valueMap: AttributeMapping['valueMap']
+): AttributeMapping => {
+  const { valueMap: _previous, ...rest } = mapping;
+  return valueMap ? { ...rest, valueMap } : rest;
+};
+
 type Props = {
   kind: 'SKU' | 'product';
   mappings: AttributeMapping[];
@@ -81,14 +137,7 @@ const AttributeMappingList = ({
           return (
             <Accordion.Item key={index} value={String(index)}>
               <Accordion.Header>
-                {mapping.name ||
-                  mapping.ctAttribute ||
-                  (mapping.constantValues
-                    ? 'Constant value'
-                    : 'Unmapped attribute')}{' '}
-                to{' '}
-                {tiktokAttribute?.name ??
-                  (mapping.tiktokAttributeId || 'no TikTok attribute')}
+                {mappingTitle(mapping, tiktokAttribute)}
               </Accordion.Header>
               <Accordion.Content>
                 <Stack direction="column" gap="300" padding="200">
@@ -100,10 +149,9 @@ const AttributeMappingList = ({
                       name={`name-${index}`}
                       aria-label="Name"
                       value={mapping.name ?? ''}
-                      onChange={(name) => {
-                        const { name: _previous, ...rest } = mapping;
-                        replace(index, name ? { ...rest, name } : rest);
-                      }}
+                      onChange={(name) =>
+                        replace(index, withName(mapping, name))
+                      }
                     />
                   </Field>
                   <Field label="Value comes from">
@@ -111,21 +159,9 @@ const AttributeMappingList = ({
                       name={`source-${index}`}
                       value={mapping.constantValues ? 'constant' : 'attribute'}
                       options={SOURCES}
-                      onChange={(source) => {
-                        const {
-                          ctAttribute: _a,
-                          constantValues: _c,
-                          transform: _t,
-                          valueMap: _v,
-                          ...rest
-                        } = mapping;
-                        replace(
-                          index,
-                          source === 'constant'
-                            ? { ...rest, constantValues: [] }
-                            : { ...rest, ctAttribute: '' }
-                        );
-                      }}
+                      onChange={(source) =>
+                        replace(index, withSource(mapping, source))
+                      }
                     />
                   </Field>
                   <Field label="TikTok attribute" isRequired>
@@ -176,30 +212,17 @@ const AttributeMappingList = ({
                           name={`transform-${index}`}
                           value={mapping.transform ?? 'identity'}
                           options={TRANSFORMS}
-                          onChange={(transform) => {
-                            const { transform: _previous, ...rest } = mapping;
-                            replace(
-                              index,
-                              transform === 'identity'
-                                ? rest
-                                : {
-                                    ...rest,
-                                    transform: transform as AttributeTransform,
-                                  }
-                            );
-                          }}
+                          onChange={(transform) =>
+                            replace(index, withTransform(mapping, transform))
+                          }
                         />
                       </Field>
                       <ValueMapEditor
                         value={mapping.valueMap}
                         tiktokValues={tiktokAttribute?.values ?? []}
-                        onChange={(valueMap) => {
-                          const { valueMap: _previous, ...rest } = mapping;
-                          replace(
-                            index,
-                            valueMap ? { ...rest, valueMap } : rest
-                          );
-                        }}
+                        onChange={(valueMap) =>
+                          replace(index, withValueMap(mapping, valueMap))
+                        }
                       />
                     </>
                   )}

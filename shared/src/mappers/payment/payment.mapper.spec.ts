@@ -1,4 +1,4 @@
-import type { Order202507GetOrderDetailResponseDataOrders } from '../../tiktok-sdk';
+import type { Order202507GetOrderDetailResponseDataOrders } from '../../../tiktok-sdk';
 import { tiktokOrderToCommercetoolsPaymentDraft } from './payment.mapper';
 
 describe('tiktokOrderToCommercetoolsPaymentDraft', () => {

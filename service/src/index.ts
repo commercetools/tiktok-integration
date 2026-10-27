@@ -1,8 +1,8 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { readConfiguration } from 'tiktok-shared/dist/config';
-import { logger } from 'tiktok-shared/dist/logger';
+import { readConfiguration } from 'tiktok-shared/dist/src/config';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import { createApp } from './app';
 
 // Fail at startup, naming the offending keys, rather than on the first request.

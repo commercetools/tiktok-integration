@@ -1,23 +1,23 @@
 import { applyTestEnv } from '../test/support';
 
-jest.mock('tiktok-shared/dist/logger', () => ({
+jest.mock('tiktok-shared/dist/src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
-jest.mock('tiktok-shared/dist/state');
-jest.mock('tiktok-shared/dist/tiktok/auth');
-jest.mock('tiktok-shared/dist/tiktok/client');
-jest.mock('tiktok-shared/dist/tiktok/webhooks', () => ({
-  ...jest.requireActual('tiktok-shared/dist/tiktok/webhooks'),
+jest.mock('tiktok-shared/dist/src/state');
+jest.mock('tiktok-shared/dist/src/tiktok/auth');
+jest.mock('tiktok-shared/dist/src/tiktok/client');
+jest.mock('tiktok-shared/dist/src/tiktok/webhooks', () => ({
+  ...jest.requireActual('tiktok-shared/dist/src/tiktok/webhooks'),
   ensureWebhooks: jest.fn(),
 }));
 
 applyTestEnv();
 
-import { StoreNotFoundError } from 'tiktok-shared/dist/errors';
-import { getTikTokStore, readState, saveTokens, writeState } from 'tiktok-shared/dist/state';
-import { exchangeAuthCode } from 'tiktok-shared/dist/tiktok/auth';
-import { createTikTokClient } from 'tiktok-shared/dist/tiktok/client';
-import { ensureWebhooks } from 'tiktok-shared/dist/tiktok/webhooks';
+import { StoreNotFoundError } from 'tiktok-shared/dist/src/errors';
+import { getTikTokStore, readState, saveTokens, writeState } from 'tiktok-shared/dist/src/state';
+import { exchangeAuthCode } from 'tiktok-shared/dist/src/tiktok/auth';
+import { createTikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
+import { ensureWebhooks } from 'tiktok-shared/dist/src/tiktok/webhooks';
 import { completeAuthorization } from './complete-authorization';
 
 const tokens = {

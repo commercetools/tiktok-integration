@@ -1,9 +1,9 @@
-jest.mock('tiktok-shared/dist/logger', () => ({
+jest.mock('tiktok-shared/dist/src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
-jest.mock('tiktok-shared/dist/services/order-sync.service');
+jest.mock('tiktok-shared/dist/src/services/order-sync.service');
 
-import { markOrderCancelled, syncTiktokOrder, type OrderSyncDeps } from 'tiktok-shared/dist/services/order-sync.service';
+import { markOrderCancelled, syncTiktokOrder, type OrderSyncDeps } from 'tiktok-shared/dist/src/services/order-sync.service';
 import { classifyWebhook, type WebhookEnvelope } from './envelope';
 import { createWebhookProcessor } from './processor';
 

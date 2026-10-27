@@ -11,9 +11,9 @@ type Row = { id: string };
 // jsdom has no ResizeObserver, which the data table needs.
 beforeAll(() => {
   global.ResizeObserver = class {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
   };
 });
 

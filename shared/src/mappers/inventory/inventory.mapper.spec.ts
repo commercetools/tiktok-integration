@@ -1,4 +1,4 @@
-import type { Product202502SearchProductsResponseDataProducts } from '../../tiktok-sdk';
+import type { Product202502SearchProductsResponseDataProducts } from '../../../tiktok-sdk';
 import { mapCommercetoolsInventoryToTiktokInventory } from './inventory.mapper';
 
 const tiktokProduct = {

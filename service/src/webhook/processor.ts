@@ -1,9 +1,9 @@
-import { logger } from 'tiktok-shared/dist/logger';
-import { mapCancellationStatus, mapReturnStatus } from 'tiktok-shared/dist/mappers/returns/return.mapper';
-import type { ReverseStatusInfo } from 'tiktok-shared/dist/mappers/returns/return.mapper';
-import type { WebhookTopic } from 'tiktok-shared/dist/tiktok/webhooks';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import { mapCancellationStatus, mapReturnStatus } from 'tiktok-shared/dist/src/mappers/returns/return.mapper';
+import type { ReverseStatusInfo } from 'tiktok-shared/dist/src/mappers/returns/return.mapper';
+import type { WebhookTopic } from 'tiktok-shared/dist/src/tiktok/webhooks';
 import { classifyWebhook, type WebhookEnvelope } from './envelope';
-import { markOrderCancelled, syncTiktokOrder, type OrderSyncDeps } from 'tiktok-shared/dist/services/order-sync.service';
+import { markOrderCancelled, syncTiktokOrder, type OrderSyncDeps } from 'tiktok-shared/dist/src/services/order-sync.service';
 
 export interface WebhookProcessorDeps {
   /** `tiktokShopId` of the connected shop; undefined when none is connected. */

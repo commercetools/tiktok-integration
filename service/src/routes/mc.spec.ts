@@ -1,17 +1,17 @@
 import { generateKeyPairSync } from 'node:crypto';
 import request from 'supertest';
-import { startIssuer, type LocalIssuer } from '../../../shared/test/support/mc';
+import { startIssuer, type LocalIssuer } from '../../../shared/src/test/support/mc';
 import { applyTestEnv } from '../test/support';
 
-jest.mock('tiktok-shared/dist/logger', () => ({
+jest.mock('tiktok-shared/dist/src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
-jest.mock('tiktok-shared/dist/state');
-jest.mock('tiktok-shared/dist/tiktok/client');
+jest.mock('tiktok-shared/dist/src/state');
+jest.mock('tiktok-shared/dist/src/tiktok/client');
 
-import { verifyAuthState } from 'tiktok-shared/dist/auth/state';
-import { isAuthorized, readState, writeState } from 'tiktok-shared/dist/state';
-import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
+import { verifyAuthState } from 'tiktok-shared/dist/src/auth/state';
+import { isAuthorized, readState, writeState } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
 import { createApp } from '../app';
 
 const ORIGIN = 'https://svc.example';

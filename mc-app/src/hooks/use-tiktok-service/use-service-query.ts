@@ -50,9 +50,11 @@ export const useServiceQuery = <T>(
 
   useEffect(() => {
     if (!enabled || !client) return undefined;
-    void refetch();
+    refetch().catch(() => undefined);
     if (!pollMs) return undefined;
-    const timer = setInterval(() => void refetch(), pollMs);
+    const timer = setInterval(() => {
+      refetch().catch(() => undefined);
+    }, pollMs);
     return () => clearInterval(timer);
   }, [enabled, client, pollMs, refetch]);
 

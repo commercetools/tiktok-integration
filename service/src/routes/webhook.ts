@@ -1,7 +1,7 @@
 import express, { Router } from 'express';
-import { readConfiguration } from 'tiktok-shared/dist/config';
-import { logger } from 'tiktok-shared/dist/logger';
-import { verifyWebhookSignature } from 'tiktok-shared/dist/tiktok/webhook-signature';
+import { readConfiguration } from 'tiktok-shared/dist/src/config';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import { verifyWebhookSignature } from 'tiktok-shared/dist/src/tiktok/webhook-signature';
 import { envelopeSchema } from '../webhook/envelope';
 import type { WebhookProcessor } from '../webhook/processor';
 

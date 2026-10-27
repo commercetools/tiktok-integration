@@ -38,6 +38,21 @@ const POLICIES: readonly AudiencePolicy[] = [
   'forward-url-origin',
 ];
 
+/** The session a verifier attaches to the request, or undefined when the token does not verify under that policy. */
+const verifiedSession = async (
+  verifyWith: (request: VerifiableRequest) => Promise<unknown>,
+  headers: VerifiableRequest['headers'],
+  path: string,
+): Promise<VerifiableRequest['session']> => {
+  const request: VerifiableRequest = { headers, url: path };
+  try {
+    await verifyWith(request);
+  } catch {
+    return undefined;
+  }
+  return request.session;
+};
+
 /**
  * Verifies the exchange token Merchant Center's `/proxy/forward-to` sends (signature, issuer,
  * audience, expiry) and that it belongs to this deployment's project. There is no permission
@@ -75,13 +90,7 @@ export const createMcVerifier = ({
 
   return async (headers, path) => {
     for (const [audiencePolicy, verifyWith] of verifiers) {
-      const request: VerifiableRequest = { headers, url: path };
-      try {
-        await verifyWith(request);
-      } catch {
-        continue;
-      }
-      const { session } = request;
+      const session = await verifiedSession(verifyWith, headers, path);
       if (!session) {
         continue;
       }

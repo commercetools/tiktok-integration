@@ -1,14 +1,14 @@
 import type { ByProjectKeyRequestBuilder, ProductProjection } from '@commercetools/platform-sdk';
-import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
-import { getAllProducts } from 'tiktok-shared/dist/commercetools/controllers/product.controller';
-import { logger } from 'tiktok-shared/dist/logger';
+import { createApiRoot } from 'tiktok-shared/dist/src/commercetools/client';
+import { getAllProducts } from 'tiktok-shared/dist/src/commercetools/controllers/product.controller';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import {
   buildTiktokProductDraft,
   loadProductMappingContext,
   type ProductMappingContext,
-} from 'tiktok-shared/dist/mappers/product/product.mapper';
-import { getTikTokStore, getValidAccessToken } from 'tiktok-shared/dist/state';
-import { getTikTokClient, type TikTokClient } from 'tiktok-shared/dist/tiktok/client';
+} from 'tiktok-shared/dist/src/mappers/product/product.mapper';
+import { getTikTokStore, getValidAccessToken } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient, type TikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
 import { HttpError } from '../errors/http-error';
 
 /** TikTok accepts at most nine main images per product. */

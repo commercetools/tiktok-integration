@@ -1,21 +1,21 @@
-jest.mock('tiktok-shared/dist/logger', () => ({
+jest.mock('tiktok-shared/dist/src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }));
-jest.mock('tiktok-shared/dist/commercetools/client');
-jest.mock('tiktok-shared/dist/state');
-jest.mock('tiktok-shared/dist/commercetools/controllers/product.controller');
-jest.mock('tiktok-shared/dist/tiktok/client');
-jest.mock('tiktok-shared/dist/mappers/product/product.mapper');
+jest.mock('tiktok-shared/dist/src/commercetools/client');
+jest.mock('tiktok-shared/dist/src/state');
+jest.mock('tiktok-shared/dist/src/commercetools/controllers/product.controller');
+jest.mock('tiktok-shared/dist/src/tiktok/client');
+jest.mock('tiktok-shared/dist/src/mappers/product/product.mapper');
 
-import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
-import { logger } from 'tiktok-shared/dist/logger';
+import { createApiRoot } from 'tiktok-shared/dist/src/commercetools/client';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import {
   buildTiktokProductDraft,
   loadProductMappingContext,
-} from 'tiktok-shared/dist/mappers/product/product.mapper';
-import { getAllProducts } from 'tiktok-shared/dist/commercetools/controllers/product.controller';
-import { getTikTokStore, getValidAccessToken } from 'tiktok-shared/dist/state';
-import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
+} from 'tiktok-shared/dist/src/mappers/product/product.mapper';
+import { getAllProducts } from 'tiktok-shared/dist/src/commercetools/controllers/product.controller';
+import { getTikTokStore, getValidAccessToken } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
 import { HttpError } from '../errors/http-error';
 import {
   runFullProductCheck,

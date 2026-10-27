@@ -1,4 +1,4 @@
-import { TikTokShopNodeApiClient } from '../tiktok-sdk';
+import { TikTokShopNodeApiClient } from '../../tiktok-sdk';
 import type {
   Event202309UpdateShopWebhookRequestBody,
   Order202309GetOrderListRequestBody,
@@ -11,8 +11,8 @@ import type {
   Product202502SearchProductsRequestBody,
   Product202509EditProductRequestBody,
   Product202509PartialEditProductRequestBody,
-} from '../tiktok-sdk';
-import { RequestFile } from '../tiktok-sdk/api/apis';
+} from '../../tiktok-sdk';
+import { RequestFile } from '../../tiktok-sdk/api/apis';
 import { readConfiguration } from '../config';
 import { NotAuthorizedError, TikTokApiError } from '../errors';
 import { getValidAccessToken, readState } from '../state';

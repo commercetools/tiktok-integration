@@ -1,7 +1,7 @@
-import { readConfiguration } from 'tiktok-shared/dist/config';
-import { logger } from 'tiktok-shared/dist/logger';
-import type { TikTokClient } from 'tiktok-shared/dist/tiktok/client';
-import { ensureWebhooks, WEBHOOK_TOPICS } from 'tiktok-shared/dist/tiktok/webhooks';
+import { readConfiguration } from 'tiktok-shared/dist/src/config';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import type { TikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
+import { ensureWebhooks, WEBHOOK_TOPICS } from 'tiktok-shared/dist/src/tiktok/webhooks';
 
 export interface WebhookRegistration {
   address?: string;

@@ -3,9 +3,9 @@ import {
   NotAuthorizedError,
   StoreNotFoundError,
   TikTokApiError,
-} from 'tiktok-shared/dist/errors';
-import { logger } from 'tiktok-shared/dist/logger';
-import { MappingConfigError } from 'tiktok-shared/dist/mappings';
+} from 'tiktok-shared/dist/src/errors';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import { MappingConfigError } from 'tiktok-shared/dist/src/mappings';
 import { HttpError } from '../errors/http-error';
 
 const isDevelopment = (): boolean => process.env.NODE_ENV === 'development';

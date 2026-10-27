@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { WebhookTopic } from 'tiktok-shared/dist/tiktok/webhooks';
+import type { WebhookTopic } from 'tiktok-shared/dist/src/tiktok/webhooks';
 
 /** TikTok's webhook envelope (plan 08). Topic data stays untyped: its shape varies per topic. */
 export const envelopeSchema = z.object({

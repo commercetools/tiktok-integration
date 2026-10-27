@@ -1,5 +1,5 @@
 import type { Order } from '@commercetools/platform-sdk';
-import type { Order202507GetOrderDetailResponseDataOrders } from '../../tiktok-sdk';
+import type { Order202507GetOrderDetailResponseDataOrders } from '../../../tiktok-sdk';
 import {
   extractCountryCode,
   mapCommercetoolsOrderToTiktokOrderReference,

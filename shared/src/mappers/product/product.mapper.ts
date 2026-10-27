@@ -15,7 +15,7 @@ import type {
   Product202309CreateProductRequestBodySkusPrice,
   Product202309EditProductRequestBody,
   Product202309GetProductResponseData,
-} from '../../tiktok-sdk';
+} from '../../../tiktok-sdk';
 import {
   ATTRIBUTE_KEY_PACKAGE_DIMENSIONS_HEIGHT,
   ATTRIBUTE_KEY_PACKAGE_DIMENSIONS_LENGTH,

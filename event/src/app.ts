@@ -1,5 +1,5 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
-import { logger } from 'tiktok-shared/dist/logger';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import { post } from './controllers/event.controller';
 
 const isBodyParseError = (error: unknown): boolean =>

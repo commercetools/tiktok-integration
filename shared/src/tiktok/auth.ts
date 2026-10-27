@@ -1,5 +1,5 @@
-import { AccessTokenTool } from '../tiktok-sdk';
-import type { BaseResponse, TokenResponse } from '../tiktok-sdk/client/token';
+import { AccessTokenTool } from '../../tiktok-sdk';
+import type { BaseResponse, TokenResponse } from '../../tiktok-sdk/client/token';
 import { readConfiguration } from '../config';
 import { TikTokApiError } from '../errors';
 

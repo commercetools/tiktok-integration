@@ -51,12 +51,34 @@ export const getTikTokStore = async (
   return store;
 };
 
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === 'string' && value !== '';
+
+/** The decrypted value, or undefined (with a warning) when the key changed; other failures propagate. */
+const decryptField = (
+  name: string,
+  value: string,
+  encryptionKey: ReturnType<typeof readConfiguration>['encryptionKey'],
+): string | undefined => {
+  try {
+    return decrypt(value, encryptionKey);
+  } catch (error) {
+    if (!(error instanceof CryptoError)) {
+      throw error;
+    }
+    logger.warn(
+      `Stored ${name} cannot be decrypted (ENCRYPTION_KEY changed?); re-authorize the shop`,
+    );
+    return undefined;
+  }
+};
+
 const decodeState = (store: Store): TikTokState => {
   const fields: Record<string, unknown> = store.custom?.fields ?? {};
   const state: TikTokState = {};
   for (const name of STRING_FIELDS) {
     const value = fields[name];
-    if (typeof value === 'string' && value !== '') {
+    if (isNonEmptyString(value)) {
       state[name] = value;
     }
   }
@@ -69,17 +91,12 @@ const decodeState = (store: Store): TikTokState => {
   const { encryptionKey } = readConfiguration();
   for (const name of SECRET_FIELDS) {
     const value = fields[name];
-    if (typeof value === 'string' && value !== '') {
-      try {
-        state[name] = decrypt(value, encryptionKey);
-      } catch (error) {
-        if (!(error instanceof CryptoError)) {
-          throw error;
-        }
-        logger.warn(
-          `Stored ${name} cannot be decrypted (ENCRYPTION_KEY changed?); re-authorize the shop`,
-        );
-      }
+    if (!isNonEmptyString(value)) {
+      continue;
+    }
+    const plain = decryptField(name, value, encryptionKey);
+    if (plain !== undefined) {
+      state[name] = plain;
     }
   }
   return state;

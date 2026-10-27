@@ -13,7 +13,7 @@ import type {
   Order202507GetOrderDetailResponseDataOrders,
   Order202507GetOrderDetailResponseDataOrdersLineItems,
   Order202507GetOrderDetailResponseDataOrdersRecipientAddress,
-} from '../../tiktok-sdk';
+} from '../../../tiktok-sdk';
 import { ORDER_CUSTOM_TYPE_KEY } from '../../constants';
 import { convertPriceToCentAmount } from '../../utils/currency';
 

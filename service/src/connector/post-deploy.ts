@@ -1,11 +1,11 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
-import { readConfiguration } from 'tiktok-shared/dist/config';
-import { logger } from 'tiktok-shared/dist/logger';
-import { isAuthorized } from 'tiktok-shared/dist/state';
-import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
+import { createApiRoot } from 'tiktok-shared/dist/src/commercetools/client';
+import { readConfiguration } from 'tiktok-shared/dist/src/config';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import { isAuthorized } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
 import { registerWebhooks, webhookAddress } from '../authorization/webhook-registration';
 
 /**

@@ -1,6 +1,6 @@
-import { readState } from 'tiktok-shared/dist/state';
-import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
-import { TtlCache } from 'tiktok-shared/dist/utils/ttl-cache';
+import { readState } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient, type TikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
+import { TtlCache } from 'tiktok-shared/dist/src/utils/ttl-cache';
 import { HttpError } from '../errors/http-error';
 
 const CACHE_TTL_MS = 10 * 60_000;
@@ -70,33 +70,39 @@ export const getCategoryRules = (categoryId: string): Promise<{ rules: unknown }
     return { rules: await (await getTikTokClient()).categories.rules(categoryId, { locale }) };
   });
 
+/** `{ [key]: value }` unless the value is undefined (false and 0 are kept), for spreading into an object. */
+const defined = <K extends string, V>(key: K, value: V | undefined): { [P in K]?: V } =>
+  value !== undefined ? ({ [key]: value } as { [P in K]?: V }) : {};
+
+/** Present, non-empty text only. */
+const nonEmpty = <K extends string>(key: K, value: string | undefined): { [P in K]?: string } =>
+  value ? ({ [key]: value } as { [P in K]?: string }) : {};
+
+type SdkAttribute = NonNullable<
+  Awaited<ReturnType<TikTokClient['categories']['attributes']>>['attributes']
+>[number];
+
+const toAttribute = (attribute: SdkAttribute & { id: string }): TikTokAttribute => ({
+  id: attribute.id,
+  ...defined('name', attribute.name),
+  ...defined('type', attribute.type),
+  // The SDK spells this field "isRequried".
+  ...defined('isRequired', attribute.isRequried),
+  ...defined('isCustomizable', attribute.isCustomizable),
+  ...defined('isMultipleSelection', attribute.isMultipleSelection),
+  values: (attribute.values ?? []).map(({ id, name }) => ({
+    ...nonEmpty('id', id),
+    ...nonEmpty('name', name),
+  })),
+});
+
 export const getCategoryAttributes = (categoryId: string): Promise<{ attributes: TikTokAttribute[] }> =>
   cached(['attributes', categoryId], async () => {
     const locale = (await readState())?.tiktokLocale;
     const data = await (await getTikTokClient()).categories.attributes(categoryId, { locale });
     return {
       attributes: (data.attributes ?? []).flatMap((attribute) =>
-        attribute.id
-          ? [
-              {
-                id: attribute.id,
-                ...(attribute.name !== undefined ? { name: attribute.name } : {}),
-                ...(attribute.type !== undefined ? { type: attribute.type } : {}),
-                // The SDK spells this field "isRequried".
-                ...(attribute.isRequried !== undefined ? { isRequired: attribute.isRequried } : {}),
-                ...(attribute.isCustomizable !== undefined
-                  ? { isCustomizable: attribute.isCustomizable }
-                  : {}),
-                ...(attribute.isMultipleSelection !== undefined
-                  ? { isMultipleSelection: attribute.isMultipleSelection }
-                  : {}),
-                values: (attribute.values ?? []).map(({ id, name }) => ({
-                  ...(id ? { id } : {}),
-                  ...(name ? { name } : {}),
-                })),
-              },
-            ]
-          : [],
+        attribute.id ? [toAttribute({ ...attribute, id: attribute.id })] : [],
       ),
     };
   });

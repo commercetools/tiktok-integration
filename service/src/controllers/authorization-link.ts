@@ -1,5 +1,5 @@
-import { issueAuthState } from 'tiktok-shared/dist/auth/state';
-import { readConfiguration } from 'tiktok-shared/dist/config';
+import { issueAuthState } from 'tiktok-shared/dist/src/auth/state';
+import { readConfiguration } from 'tiktok-shared/dist/src/config';
 import { HttpError } from '../errors/http-error';
 
 /** Seller authorization endpoint used when TIKTOK_APP_AUTHORIZATION_LINK is not configured. */

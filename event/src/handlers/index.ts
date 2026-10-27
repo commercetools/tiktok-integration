@@ -1,4 +1,4 @@
-import { logger } from 'tiktok-shared/dist/logger';
+import { logger } from 'tiktok-shared/dist/src/logger';
 import type { SubscriptionMessage } from '../envelope';
 import { createSyncContext } from '../tiktok-products';
 import { handleInventoryMessage, type InventoryMessage } from './inventory';

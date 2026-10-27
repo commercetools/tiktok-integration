@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { createApiRoot } from 'tiktok-shared/dist/commercetools/client';
-import { logger } from 'tiktok-shared/dist/logger';
-import { readState } from 'tiktok-shared/dist/state';
-import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
+import { createApiRoot } from 'tiktok-shared/dist/src/commercetools/client';
+import { logger } from 'tiktok-shared/dist/src/logger';
+import { readState } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
 import { reconcileOrders } from '../jobs/reconcile-orders';
 import { authorizationStatus, refreshTokensIfExpiring } from '../jobs/tokens';
 

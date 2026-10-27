@@ -1,6 +1,6 @@
-import { isAuthorized, readState } from 'tiktok-shared/dist/state';
-import { getTikTokClient } from 'tiktok-shared/dist/tiktok/client';
-import { TtlCache } from 'tiktok-shared/dist/utils/ttl-cache';
+import { isAuthorized, readState } from 'tiktok-shared/dist/src/state';
+import { getTikTokClient } from 'tiktok-shared/dist/src/tiktok/client';
+import { TtlCache } from 'tiktok-shared/dist/src/utils/ttl-cache';
 import { parseStoredWarehouses } from '../authorization/shop';
 import {
   readWebhookStatus,
@@ -28,6 +28,22 @@ export interface ConnectionStatus {
   webhooks?: WebhookStatus;
 }
 
+/** `{ [key]: value }` when the value is present, otherwise nothing, for spreading into an object. */
+const only = <K extends string, V>(key: K, value: V | undefined): { [P in K]?: V } =>
+  value ? ({ [key]: value } as { [P in K]?: V }) : {};
+
+const shopOf = (state: Awaited<ReturnType<typeof readState>>): Pick<ConnectionStatus, 'shop'> =>
+  state?.tiktokShopId
+    ? {
+        shop: {
+          id: state.tiktokShopId,
+          ...only('name', state.tiktokShopName),
+          ...only('code', state.tiktokShopCode),
+          ...only('region', state.tiktokRegion),
+        },
+      }
+    : {};
+
 /** What the Merchant Center shows about the TikTok connection. Never contains tokens. */
 export const getConnectionStatus = async (): Promise<ConnectionStatus> => {
   const state = await readState();
@@ -41,31 +57,18 @@ export const getConnectionStatus = async (): Promise<ConnectionStatus> => {
 
   return {
     connected,
-    ...(state?.tiktokShopId
-      ? {
-          shop: {
-            id: state.tiktokShopId,
-            ...(state.tiktokShopName ? { name: state.tiktokShopName } : {}),
-            ...(state.tiktokShopCode ? { code: state.tiktokShopCode } : {}),
-            ...(state.tiktokRegion ? { region: state.tiktokRegion } : {}),
-          },
-        }
-      : {}),
+    ...shopOf(state),
     warehouses: parseStoredWarehouses(state?.tiktokWarehouses).map(({ id, name, type }) => ({
       id,
-      ...(name ? { name } : {}),
-      ...(type ? { type } : {}),
+      ...only('name', name),
+      ...only('type', type),
     })),
-    ...(state?.tiktokAuthorizedAt ? { authorizedAt: state.tiktokAuthorizedAt } : {}),
-    ...(connected && state?.tiktokAccessExpiresAt
-      ? { accessTokenExpiresAt: state.tiktokAccessExpiresAt }
-      : {}),
-    ...(connected && state?.tiktokRefreshExpiresAt
-      ? { refreshTokenExpiresAt: state.tiktokRefreshExpiresAt }
-      : {}),
-    ...(state?.tiktokDeauthorizedAt ? { deauthorizedAt: state.tiktokDeauthorizedAt } : {}),
+    ...only('authorizedAt', state?.tiktokAuthorizedAt),
+    ...only('accessTokenExpiresAt', connected ? state?.tiktokAccessExpiresAt : undefined),
+    ...only('refreshTokenExpiresAt', connected ? state?.tiktokRefreshExpiresAt : undefined),
+    ...only('deauthorizedAt', state?.tiktokDeauthorizedAt),
     storeFound: state !== undefined,
     serviceConfigured: webhookAddress() !== undefined,
-    ...(webhooks ? { webhooks } : {}),
+    ...only('webhooks', webhooks),
   };
 };

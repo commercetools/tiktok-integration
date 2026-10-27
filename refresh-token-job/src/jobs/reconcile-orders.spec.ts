@@ -1,9 +1,9 @@
 import type { ByProjectKeyRequestBuilder, Order } from '@commercetools/platform-sdk';
 import { LOOKBACK_SECONDS, TIME_BUDGET_MS, needsSync, reconcileOrders } from './reconcile-orders';
 
-jest.mock('tiktok-shared/dist/logger', () => ({ logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } }));
-jest.mock('tiktok-shared/dist/services', () => ({ getShopContext: jest.fn() }));
-jest.mock('tiktok-shared/dist/services/order-sync.service', () => ({ syncTiktokOrder: jest.fn() }));
+jest.mock('tiktok-shared/dist/src/logger', () => ({ logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() } }));
+jest.mock('tiktok-shared/dist/src/services', () => ({ getShopContext: jest.fn() }));
+jest.mock('tiktok-shared/dist/src/services/order-sync.service', () => ({ syncTiktokOrder: jest.fn() }));
 
 const ctOrder = (tiktokOrderId: string, status: string, updateTime: number) =>
   ({

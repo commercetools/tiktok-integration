@@ -66,6 +66,20 @@ All state lives on the commercetools **Store** marked `isTikTokShop`, as custom 
 - Node.js 22 and Yarn 1 for local work.
 - A TikTok warehouse set up in Seller Center (the connector pushes stock to it).
 
+## Quick start
+
+1. Have a commercetools (Merchant Center) project.
+2. Run [Terraform](terraform/README.md) to create the types, channel and store.
+3. In TikTok Partner Center (**App & Service** > your app), get the **app key** and **app secret**.
+4. Deploy the connector **twice**:
+   1. First deploy, with the app key and secret. Connect then shows the **service URL**, which ends in `/service`.
+   2. Set `SERVICE_URL` on `mc-app` to that URL and redeploy.
+5. Back in Partner Center (**App & Service** > your app), set:
+   1. **Redirect URL**: `<service-url>/auth/callback`
+   2. **Webhook URL**: `<service-url>/webhook`
+
+The full walkthrough is in [Setup in two phases](#setup-in-two-phases) and [docs/setup.md](docs/setup.md).
+
 ## The two URLs to set in TikTok Partner Center
 
 The connector only works if your TikTok partner app has these two URLs registered. Everything else in setup can be fixed
@@ -107,7 +121,7 @@ walkthrough is in [docs/setup.md](docs/setup.md).
 
 8. Set `SERVICE_URL` on `mc-app` to the service URL and **redeploy `mc-app`**. Connect does not pass the service URL to the
    Merchant Center app, so this redeploy is required. Until then the app shows a "service not configured" screen.
-9. Open the app in the Merchant Center and run the wizard: choose an existing store or create a new one (with its product selection and channels), click **Authorize with TikTok**, then choose the TikTok warehouse from the list TikTok returns.
+9. Open the app in the Merchant Center and run the wizard: choose an existing store or create a new one (with an optional product selection, and channels), click **Authorize with TikTok**, then choose the TikTok warehouse from the list TikTok returns.
 10. The callback exchanges the code for tokens, derives the shop id, cipher, region and warehouses, stores them encrypted on the Store, and registers the webhook topics.
 
 ## Configuration

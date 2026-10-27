@@ -146,6 +146,13 @@ describe('createTikTokStore', () => {
     ]);
   });
 
+  it('creates the store without a product selection when none is given', async () => {
+    const { deps, mocks } = makeDeps();
+    await createTikTokStore({ ...input(), productSelection: undefined }, deps);
+    expect(mocks.createProductSelection).not.toHaveBeenCalled();
+    expect(mocks.createStore.mock.calls[0]?.[0].productSelections).toEqual([]);
+  });
+
   it('creates nothing but the store when everything exists', async () => {
     const { deps, mocks } = makeDeps();
     await createTikTokStore(

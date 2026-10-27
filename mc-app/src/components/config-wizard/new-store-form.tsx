@@ -68,7 +68,7 @@ const Section = ({
 );
 
 /**
- * Creates a store for TikTok with its product selection and channels (new, or
+ * Creates a store for TikTok with an optional product selection and channels (new, or
  * existing ones of the project), and marks it `isTikTokShop`. The warehouse is
  * not asked here: TikTok has to be authorized first.
  */
@@ -85,6 +85,7 @@ const NewStoreForm = () => {
   const [storeName, setStoreName] = useState('TikTok Store');
   const [storeKey, setStoreKey] = useState(toKey('TikTok Store'));
   const [storeKeyEdited, setStoreKeyEdited] = useState(false);
+  const [withSelection, setWithSelection] = useState(true);
   const [selection, setSelection] = useState(initialChoice('TikTok Products'));
   const [oneChannel, setOneChannel] = useState(true);
   const [sharedChannel, setSharedChannel] = useState(
@@ -140,13 +141,15 @@ const NewStoreForm = () => {
   const input: StoreSetupInput | undefined =
     storeName.trim() &&
     isValidKey(storeKey) &&
-    selectionChoice &&
+    (!withSelection || selectionChoice) &&
     channelsInput &&
     !sameNewKey
       ? {
           locale: dataLocale,
           store: { name: storeName.trim(), key: storeKey },
-          productSelection: selectionChoice,
+          ...(withSelection && selectionChoice
+            ? { productSelection: selectionChoice }
+            : {}),
           channels: channelsInput,
         }
       : undefined;
@@ -209,16 +212,25 @@ const NewStoreForm = () => {
 
       <Section
         title="Product selection"
-        description="Which products the store sells. Add products to the selection in the Merchant Center."
+        description="Which products the store sells. Add products to the selection in the Merchant Center. You can also create the store without one and add it later."
       >
-        <ResourceChoiceField
-          noun="product selection"
-          options={selectionOptions}
-          value={selection}
-          onChange={setSelection}
+        <Checkbox
+          isSelected={withSelection}
+          onChange={setWithSelection}
           isDisabled={loading}
-          emptyHint="This project has no product selection yet."
-        />
+        >
+          Add a product selection to the store
+        </Checkbox>
+        {withSelection && (
+          <ResourceChoiceField
+            noun="product selection"
+            options={selectionOptions}
+            value={selection}
+            onChange={setSelection}
+            isDisabled={loading}
+            emptyHint="This project has no product selection yet."
+          />
+        )}
       </Section>
 
       <Section

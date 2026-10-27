@@ -8,7 +8,8 @@ export type ResourceChoice =
 export type StoreSetupInput = {
   locale: string;
   store: { name: string; key: string };
-  productSelection: ResourceChoice;
+  /** Omitted to create the store without a product selection. */
+  productSelection?: ResourceChoice;
   channels:
     | { shared: true; channel: ResourceChoice }
     | { shared: false; price: ResourceChoice; inventory: ResourceChoice };
@@ -54,8 +55,8 @@ export const PRICE_ROLE = 'ProductDistribution';
 export const INVENTORY_ROLE = 'InventorySupply';
 
 /**
- * Creates the store, and the product selection and channels that are new, in
- * that order. The store is created last and already marked `isTikTokShop`.
+ * Creates the store, and the product selection (when asked for) and channels
+ * that are new, in that order. The store is created last and already marked `isTikTokShop`.
  * Channels get no custom type yet: the channel type requires the TikTok
  * warehouse ID, which is only known after TikTok is authorized.
  */
@@ -81,11 +82,13 @@ export const createTikTokStore = async (
     return id;
   };
 
-  const productSelectionId = await resolve(
-    'productSelection',
-    input.productSelection,
-    deps.createProductSelection
-  );
+  const productSelectionId = input.productSelection
+    ? await resolve(
+        'productSelection',
+        input.productSelection,
+        deps.createProductSelection
+      )
+    : undefined;
 
   let priceChannelId: string;
   let inventoryChannelId: string;
@@ -114,15 +117,17 @@ export const createTikTokStore = async (
     name: name(input.store.name),
     distributionChannels: [{ typeId: 'channel', id: priceChannelId }],
     supplyChannels: [{ typeId: 'channel', id: inventoryChannelId }],
-    productSelections: [
-      {
-        productSelection: {
-          typeId: 'product-selection',
-          id: productSelectionId,
-        },
-        active: true,
-      },
-    ],
+    productSelections: productSelectionId
+      ? [
+          {
+            productSelection: {
+              typeId: 'product-selection',
+              id: productSelectionId,
+            },
+            active: true,
+          },
+        ]
+      : [],
     custom: {
       typeKey: 'tiktok-store-type',
       fields: [{ name: 'isTikTokShop', value: 'true' }],

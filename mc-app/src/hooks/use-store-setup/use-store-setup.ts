@@ -55,7 +55,7 @@ export const useProductSelectionsFetcher = (): {
 
 const context = { target: GRAPHQL_TARGETS.COMMERCETOOLS_PLATFORM };
 
-/** Creates a store with its product selection and channels, see `createTikTokStore`. */
+/** Creates a store with an optional product selection and channels, see `createTikTokStore`. */
 export const useStoreCreator = () => {
   const [loading, setLoading] = useState(false);
   const [createProductSelection] = useMcMutation<{

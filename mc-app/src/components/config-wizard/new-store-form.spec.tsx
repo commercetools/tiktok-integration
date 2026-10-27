@@ -130,6 +130,19 @@ it('is ready to create everything new with sensible names and keys', async () =>
   expect(mockShowNotification.mock.calls[0][0].text).toContain('Store created');
 });
 
+it('creates the store without a product selection when the box is unticked', async () => {
+  renderForm();
+  await screen.findByLabelText(field('Store name'));
+  fireEvent.click(
+    screen.getByLabelText('Add a product selection to the store')
+  );
+  await waitFor(() => expect(isDisabled(submit())).toBe(false));
+  fireEvent.click(submit());
+
+  await waitFor(() => expect(mockCreate).toHaveBeenCalledTimes(1));
+  expect(mockCreate.mock.calls[0][0]).not.toHaveProperty('productSelection');
+});
+
 it('derives the key from the name until the key is edited', async () => {
   renderForm();
   const name = await screen.findByLabelText(field('Store name'));

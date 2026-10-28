@@ -74,7 +74,8 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@commercetools-frontend/application-shell-connectors": "27.15.0",
-    "dompurify": "3.4.17"
+    "dompurify": "3.4.17",
+    "sockjs/uuid": "11.1.1"
   },
   "packageManager": "yarn@1.22.22",
   "devDependencies": {}

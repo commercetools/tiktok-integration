@@ -1,4 +1,6 @@
-# TikTok Shop integration for commercetools
+# TikTok Shop integration
+
+> **commercetools-labs** reference code. Freely available under the [MIT License](LICENSE), provided **AS IS and UNSUPPORTED**. See [SUPPORT.md](SUPPORT.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Sell your commercetools catalog on TikTok Shop without building the plumbing yourself. This connector publishes
 products and stock from a commercetools project to one TikTok shop, and brings TikTok orders back into commercetools.
@@ -14,10 +16,8 @@ commercetools Connect.
 - A Merchant Center custom application to authorize the shop, map product types and attributes to TikTok categories, and run syncs.
 - Four Connect applications and the Terraform for the custom types they need.
 
-This project is freely available, provided as is, and not supported by commercetools. See [SUPPORT.md](SUPPORT.md).
-
 > One deployment connects **one commercetools project to one TikTok shop**. You register your own TikTok Shop partner
-> app and the connector uses its key and secret. There is no shared multi-tenant backend.
+> app and the connector uses its key and secret.
 
 ## Architecture
 

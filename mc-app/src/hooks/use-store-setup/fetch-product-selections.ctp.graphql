@@ -1,0 +1,15 @@
+query FetchProductSelections($limit: Int, $offset: Int, $sort: [String!]) {
+  productSelections(limit: $limit, offset: $offset, sort: $sort) {
+    total
+    count
+    offset
+    results {
+      id
+      key
+      nameAllLocales {
+        locale
+        value
+      }
+    }
+  }
+}

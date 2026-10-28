@@ -1,0 +1,8 @@
+{
+  "Welcome.cardMapperContent": "Map product types to TikTok categories, and their attributes to TikTok attributes.",
+  "Welcome.cardMapperTitle": "Product Mappers",
+  "Welcome.productSynchronizationContent": "Synchronize products between commercetools and TikTok.",
+  "Welcome.productSynchronizationTitle": "Product Synchronization",
+  "Welcome.subtitle": "Using this connector, you can synchronize products between commercetools and TikTok.",
+  "Welcome.title": "Welcome to the TikTok Connector"
+}

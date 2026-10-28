@@ -1,0 +1,29 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "include": [
+    "src",
+    "tiktok-sdk"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/test",
+    "**/*.spec.ts",
+    "**/__snapshots__",
+    "tiktok-sdk/**/*.md"
+  ],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "./node_modules/*",
+        "./node_modules/@types/*"
+      ]
+    },
+    "inlineSourceMap": true
+  }
+}

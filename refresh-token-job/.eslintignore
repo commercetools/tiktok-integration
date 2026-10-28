@@ -1,0 +1,4 @@
+node_modules
+build/
+.nvmrc
+src/shared/interfaces/tiktok

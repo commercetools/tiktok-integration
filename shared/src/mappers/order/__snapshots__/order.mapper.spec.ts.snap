@@ -1,0 +1,166 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tiktokOrderToCommercetoolsOrderImportDraft maps a TikTok order to an order import draft 1`] = `
+{
+  "billingAddress": {
+    "additionalStreetInfo": undefined,
+    "city": "San Francisco",
+    "country": "US",
+    "email": "buyer@example.com",
+    "firstName": "Jane",
+    "lastName": "Q Doe",
+    "phone": "+15550100",
+    "postalCode": "94016",
+    "region": "California",
+    "state": "California",
+    "streetName": "1 Main St",
+    "streetNumber": "Apt 2",
+  },
+  "country": "US",
+  "custom": {
+    "fields": {
+      "tiktokBuyerMessage": "please hurry",
+      "tiktokCreateTime": 1718305000,
+      "tiktokDeliveryType": "HOME_DELIVERY",
+      "tiktokFulfillmentType": "FULFILLED_BY_SELLER",
+      "tiktokOrderId": "576653688135258178",
+      "tiktokOrderStatus": "AWAITING_SHIPMENT",
+      "tiktokPaidTime": 1718305100,
+      "tiktokPaymentMethodName": "CARD",
+      "tiktokShippingType": "TIKTOK",
+      "tiktokUpdateTime": 1718305585,
+      "tiktokWarehouseId": "wh-1",
+    },
+    "type": {
+      "key": "tiktok-order-info",
+      "typeId": "type",
+    },
+  },
+  "customerEmail": "buyer@example.com",
+  "inventoryMode": "None",
+  "lineItems": [
+    {
+      "key": "li-1",
+      "name": {
+        "en-US": "Mug",
+      },
+      "price": {
+        "value": {
+          "centAmount": 1000,
+          "currencyCode": "USD",
+        },
+      },
+      "quantity": 1,
+      "taxRate": {
+        "amount": 0.1,
+        "country": "US",
+        "includedInPrice": false,
+        "name": "SALES_TAX",
+      },
+      "variant": {
+        "sku": "MUG-1",
+      },
+    },
+    {
+      "key": "li-2",
+      "name": {
+        "en-US": "Cup",
+      },
+      "price": {
+        "value": {
+          "centAmount": 1000,
+          "currencyCode": "USD",
+        },
+      },
+      "quantity": 1,
+      "taxRate": undefined,
+      "variant": {
+        "sku": "CUP-1",
+      },
+    },
+  ],
+  "orderState": "Open",
+  "origin": "Merchant",
+  "shipmentState": "Ready",
+  "shippingAddress": {
+    "additionalStreetInfo": undefined,
+    "city": "San Francisco",
+    "country": "US",
+    "email": "buyer@example.com",
+    "firstName": "Jane",
+    "lastName": "Q Doe",
+    "phone": "+15550100",
+    "postalCode": "94016",
+    "region": "California",
+    "state": "California",
+    "streetName": "1 Main St",
+    "streetNumber": "Apt 2",
+  },
+  "shippingInfo": {
+    "deliveries": [
+      {
+        "items": [
+          {
+            "id": "li-1",
+            "quantity": 1,
+          },
+          {
+            "id": "li-2",
+            "quantity": 1,
+          },
+        ],
+        "parcels": [
+          {
+            "id": "pkg-1",
+            "trackingData": {
+              "carrier": "UPS",
+              "trackingId": "TRACK123",
+            },
+          },
+        ],
+      },
+    ],
+    "price": {
+      "centAmount": 500,
+      "currencyCode": "USD",
+    },
+    "shippingMethodName": "Standard",
+    "shippingRate": {
+      "price": {
+        "centAmount": 500,
+        "currencyCode": "USD",
+      },
+    },
+    "taxRate": {
+      "amount": 0.1,
+      "country": "US",
+      "includedInPrice": false,
+      "name": "Shipping Tax",
+    },
+  },
+  "taxedPrice": {
+    "taxPortions": [
+      {
+        "amount": {
+          "centAmount": 200,
+          "currencyCode": "USD",
+        },
+        "name": "Sales Tax",
+        "rate": 0.1,
+      },
+    ],
+    "totalGross": {
+      "centAmount": 2750,
+      "currencyCode": "USD",
+    },
+    "totalNet": {
+      "centAmount": 2000,
+      "currencyCode": "USD",
+    },
+  },
+  "totalPrice": {
+    "centAmount": 2750,
+    "currencyCode": "USD",
+  },
+}
+`;
